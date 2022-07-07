@@ -10,7 +10,7 @@ function App() {
   return (
     <Routes>
         <Route path="/" element={<LoginPage/>}/>
-        <Route path="/getToken" element={<TokenPage win={window}/>}/>
+        <Route path="/getToken" element={<TokenPage/>}/>
     </Routes>
   );
 }
