@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import queryString from "query-string";
 import jwtDecode from "jwt-decode";
+import {Col, Container, Row} from "react-bootstrap";
 
 function LoginPage() {
     const vkCodeUrl = "https://oauth.vk.com/authorize?client_id=8212997&display=popup&redirect_uri=http://localhost:3000/getToken&scope=offline&response_type=code&v=5.131";
@@ -66,10 +67,20 @@ function LoginPage() {
     }
 
     return (
-        <div>
-            <div id="signInGoogleDiv"></div>
-            <button className="btn btn-dark" onClick={loginViaYandex}>Войти через Яндекс</button>
-            <button className="btn btn-secondary" onClick={loginViaVk}>Войти через VK</button>
+        <div className="d-flex flex-column vh-100">
+            <Container fluid={true} className="d-flex h-100 justify-content-center align-items-center p-0">
+                <Row className="bg-white shadow-sm">
+                    <Col className="border rounded p-4">
+                        <div id="signInGoogleDiv"></div>
+                        <div>
+                            <button className="btn btn-dark" onClick={loginViaYandex}>Войти через Яндекс</button>
+                        </div>
+                        <div>
+                            <button className="btn btn-secondary" onClick={loginViaVk}>Войти через VK</button>
+                        </div>
+                    </Col>
+                </Row>
+            </Container>
         </div>
     )
 }
