@@ -1,0 +1,21 @@
+.welcome-image {
+    background: darkgray;
+    height: 426px;
+}
+
+.welcome-card {
+    border: none;
+}
+
+.welcome-card-body {
+    padding: 1rem 0 0 0;
+}
+
+.welcome-card-title {
+    font-weight: bold;
+}
+
+footer {
+    background: darkgray;
+    height: 128px;
+}
