@@ -1,0 +1,29 @@
+.game-list-card-member-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.game-list-member-card-img {
+    border-radius: 100%;
+    height: 150px;
+    width: 150px;
+}
+
+.game-list-member-card-nickname {
+    font-weight: bold;
+    margin: 0.5rem 0 0 0;
+    text-align: center;
+}
+
+.game-list-member-additional-info {
+    font-size: 0.7em;
+    margin: 0;
+    text-align: center;
+}
+
+.game-list-join-card-button {
+    border-radius: 100%;
+    height: 150px;
+    width: 150px;
+}
