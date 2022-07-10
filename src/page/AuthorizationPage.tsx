@@ -1,9 +1,17 @@
+import "./AuthorizationPage.css";
+
 import {useEffect, useState} from "react";
+import {Col, Container, Row} from "react-bootstrap";
 import queryString from "query-string";
 import jwtDecode from "jwt-decode";
-import {Col, Container, Row} from "react-bootstrap";
 
-function LoginPage() {
+//@ts-ignore
+import yandexLogo from "../assets/yandex_logo.svg";
+
+//@ts-ignore
+import vkLogo from "../assets/vk_logo.svg";
+
+function AuthorizationPage() {
     const vkCodeUrl = "https://oauth.vk.com/authorize?client_id=8212997&display=popup&redirect_uri=http://localhost:3000/getToken&scope=offline&response_type=code&v=5.131";
 
     /*const vkAccessTokenUrl = (code: string) => {
@@ -70,13 +78,24 @@ function LoginPage() {
         <div className="d-flex flex-column vh-100">
             <Container fluid={true} className="d-flex h-100 justify-content-center align-items-center p-0">
                 <Row className="bg-white shadow-sm">
-                    <Col className="border rounded p-4">
-                        <div id="signInGoogleDiv"></div>
-                        <div>
-                            <button className="btn btn-dark" onClick={loginViaYandex}>Войти через Яндекс</button>
+                    <Col className="border rounded p-4 btn-container">
+                        <h1 className="login-title">Войти</h1>
+
+                        <div id="signInGoogleDiv" className="btn-google py-1">
                         </div>
-                        <div>
-                            <button className="btn btn-secondary" onClick={loginViaVk}>Войти через VK</button>
+
+                        <div className="py-1">
+                            <button className="btn btn-logo btn-yandex" onClick={loginViaYandex}>
+                                <img className="logo-img" src={yandexLogo} alt="yandex logo"/>
+                                <span>Войти с Яндекс ID</span>
+                            </button>
+                        </div>
+
+                        <div className="py-1">
+                            <button className="btn btn-logo btn-vk" onClick={loginViaVk}>
+                                <img className="logo-img" src={vkLogo} alt="vkontakte logo"/>
+                                <span>Войти через ВКонтакте</span>
+                            </button>
                         </div>
                     </Col>
                 </Row>
@@ -85,4 +104,4 @@ function LoginPage() {
     )
 }
 
-export default LoginPage;
+export default AuthorizationPage;

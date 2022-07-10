@@ -1,7 +1,7 @@
 import React from 'react';
 import {Route, Routes} from "react-router";
 
-import LoginPage from "./page/LoginPage";
+import AuthorizationPage from "./page/AuthorizationPage";
 import TokenPage from "./page/TokenPage";
 import {WelcomePage} from "./page/WelcomePage";
 import {GameListPage} from "./page/GameListPage";
@@ -12,7 +12,7 @@ function App() {
         <Route path="/" element={<WelcomePage/>}/>
         <Route path="/games" element={<GameListPage/>}/>
 
-        <Route path="/login" element={<LoginPage/>}/>
+        <Route path="/login" element={<AuthorizationPage/>}/>
         <Route path="/getToken" element={<TokenPage/>}/>
     </Routes>
   );

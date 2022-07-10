@@ -1,0 +1,50 @@
+.btn-logo {
+    height: 36px;
+    width: 100%;
+}
+
+.btn-logo > span {
+    padding: 0 8px;
+}
+
+.btn-vk {
+    background: #0077FF;
+    color: #FFF;
+}
+
+.btn-vk:hover {
+    background: #000;
+    color: #FFF;
+}
+
+.btn-yandex {
+    border: solid 1px #333;
+    color: #FFF;
+    background: #000;
+}
+
+.btn-google > div > div > iframe {
+    margin: auto;
+}
+
+.btn-google > div > div > div {
+    margin: auto;
+}
+
+.btn-yandex:hover {
+    color: #000;
+    background: #FFF;
+}
+
+.logo-img {
+    display: inline-block;
+    width: 1em;
+}
+
+.login-title {
+    font-weight: bold;
+}
+
+.btn-container {
+    max-width: 284px;
+}
