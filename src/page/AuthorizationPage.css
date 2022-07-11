@@ -23,14 +23,6 @@
     background: #000;
 }
 
-.btn-google > div > div > iframe {
-    margin: auto;
-}
-
-.btn-google > div > div > div {
-    margin: auto;
-}
-
 .btn-yandex:hover {
     color: #000;
     background: #FFF;
