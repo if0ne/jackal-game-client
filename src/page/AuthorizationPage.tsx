@@ -11,20 +11,14 @@ import yandexLogo from "../assets/yandex_logo.svg";
 //@ts-ignore
 import vkLogo from "../assets/vk_logo.svg";
 
-//@ts-ignore
-import googleLogo from "../assets/google_logo.png";
-
 function AuthorizationPage() {
-    const vkCodeUrl = "https://oauth.vk.com/authorize?client_id=8212997&display=popup&redirect_uri=http://localhost:3000/getToken&scope=offline&response_type=code&v=5.131";
+    const vkAuthorizeUrl = "https://oauth.vk.com/authorize?client_id=8212997&display=popup&redirect_uri=http://localhost:3000/getToken&scope=offline&response_type=token&v=5.131";
 
     const yandexAuthorizeUrl = "https://oauth.yandex.ru/authorize?response_type=token&client_id=e431653fdda94550bf9d9941bca409b3&redirect_uri=http://localhost:3000/getToken"
 
-    const googleCodeUrl = "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=582286245104-phr8rri2nd5bmqdmufsdsaokcq8qos7b.apps.googleusercontent.com&scope=openid%20email&redirect_uri=http://localhost:3000/getToken";
-
     const [token, setToken] = useState(null);
 
-    //TODO: Разбить на компонеты
-    const loginViaYandex = () => {
+    const login = (url: string) => {
         //@ts-ignore
         window.SetTokenCallback = undefined;
 
@@ -37,23 +31,17 @@ function AuthorizationPage() {
             }
         }
 
-        window.open(yandexAuthorizeUrl, 'auth', "menubar=no, location=no, resizable=no, scrollbars=no, status=no, width=800, height=600, top=100, left=100");
+        window.open(url, 'auth', "menubar=no, location=no, resizable=no, scrollbars=no, status=no, width=800, height=600, top=100, left=100");
+
+    };
+
+    //TODO: Разбить на компонеты
+    const loginViaYandex = () => {
+        login(yandexAuthorizeUrl);
     }
 
     const loginViaVk = () => {
-        //@ts-ignore
-        window.SetTokenCallback = undefined;
-
-        //@ts-ignore
-        window.SetTokenCallback = (url: string) => {
-            let query = queryString.parse(url);
-            if (query["http://localhost:3000/getToken?code"] !== undefined) {
-                const codeFromQuery = query["http://localhost:3000/getToken?code"];
-                console.log(codeFromQuery);
-            }
-        }
-
-        window.open(vkCodeUrl, 'auth', "menubar=no, location=no, resizable=no, scrollbars=no, status=no, width=800, height=600, top=100, left=100");
+        login(vkAuthorizeUrl);
     }
 
     const logout = () => {
