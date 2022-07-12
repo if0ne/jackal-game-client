@@ -1,0 +1,38 @@
+import "./AuthorizationPage.css";
+
+import {useEffect, useState} from "react";
+import {Col, Container, Row} from "react-bootstrap";
+import {LoginButton} from "./LoginButton";
+
+export const AuthorizationForm = () => {
+    const vkAuthorizeUrl = `https://oauth.vk.com/authorize?client_id=${process.env.REACT_APP_VK_CLIENT_ID}&display=popup&redirect_uri=http://localhost:3000/getToken&scope=offline&response_type=token&v=5.131`;
+    const yandexAuthorizeUrl = `https://oauth.yandex.ru/authorize?response_type=token&client_id=${process.env.REACT_APP_YANDEX_CLIENT_ID}&redirect_uri=http://localhost:3000/getToken`;
+
+    const [accessToken, setAccessToken] = useState<string | null>(null);
+
+    const logout = () => {
+    }
+
+    useEffect(() => {
+        if (accessToken != null) {
+            console.log(accessToken);
+
+            //TODO: useAuth для входа
+        }
+    }, [accessToken]);
+
+    return (
+        <div className="d-flex flex-column vh-100">
+            <Container fluid={true} className="d-flex h-100 justify-content-center align-items-center p-0">
+                <Row className="bg-white shadow-sm">
+                    <Col className="border rounded p-4 btn-container">
+                        <h1 className="login-title">Войти</h1>
+
+                        <LoginButton url={yandexAuthorizeUrl} className="btn-yandex" imgLogo={{ src: "yandex", alt: "yandex logo" }} text="Войти с Яндекс ID" callback={(accessToken) => setAccessToken(accessToken)}/>
+                        <LoginButton url={vkAuthorizeUrl} className="btn-vk" imgLogo={{ src: "vk", alt: "vkontakte logo" }} text="Войти через ВКонтакте" callback={(accessToken) => setAccessToken(accessToken)}/>
+                    </Col>
+                </Row>
+            </Container>
+        </div>
+    )
+}

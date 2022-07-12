@@ -1,9 +1,9 @@
 import {Card, Col} from "react-bootstrap";
+import {useEffect} from "react";
 
 type WelcomeCardProps = {
     title: string,
-    text: string,
-    picture: any
+    picture: string
 };
 
 export const WelcomeCard = (props: WelcomeCardProps) => {
@@ -13,7 +13,6 @@ export const WelcomeCard = (props: WelcomeCardProps) => {
                 <Card.Img variant="top" src={props.picture}/>
                 <Card.Body className="welcome-card-body">
                     <Card.Title className="welcome-card-title">{props.title}</Card.Title>
-                    <Card.Text>{props.text}</Card.Text>
                 </Card.Body>
             </Card>
         </Col>
