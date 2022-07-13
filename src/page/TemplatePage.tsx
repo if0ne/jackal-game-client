@@ -6,8 +6,10 @@ export const TemplatePage = (props: any) => {
         <div>
             <div className="d-flex flex-column min-vh-100">
                 <NavbarComponent/>
-                {props.children}
+                <div className="wrapper flex-grow-1">
+                    {props.children}
+                </div>
+                <FooterComponent/>
             </div>
-            <FooterComponent/>
         </div>)
 }

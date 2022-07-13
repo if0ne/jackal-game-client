@@ -8,6 +8,7 @@ export const AuthorizationForm = () => {
     const vkAuthorizeUrl = `https://oauth.vk.com/authorize?client_id=${process.env.REACT_APP_VK_CLIENT_ID}&display=popup&redirect_uri=http://localhost:3000/getToken&scope=offline&response_type=token&v=5.131`;
     const yandexAuthorizeUrl = `https://oauth.yandex.ru/authorize?response_type=token&client_id=${process.env.REACT_APP_YANDEX_CLIENT_ID}&redirect_uri=http://localhost:3000/getToken`;
 
+    //TODO: убрать использовать useAuth на callback-е
     const [accessToken, setAccessToken] = useState<string | null>(null);
 
     const logout = () => {

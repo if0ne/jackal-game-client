@@ -4,7 +4,6 @@ import yandexLogo from "../../assets/yandex_logo.svg";
 //@ts-ignore
 import vkLogo from "../../assets/vk_logo.svg";
 
-import {useEffect, useState} from "react";
 import queryString from "query-string";
 
 type LoginButtonProps = {
@@ -19,8 +18,6 @@ type LoginButtonProps = {
 }
 
 export const LoginButton = (props: LoginButtonProps) => {
-    const [accessToken, setAccessToken] = useState<string | null>(null);
-
     const login = () => {
         //@ts-ignore
         window.SetTokenCallback = undefined;
@@ -30,7 +27,7 @@ export const LoginButton = (props: LoginButtonProps) => {
             let query = queryString.parse(url);
             if (query["http://localhost:3000/getToken#access_token"] !== undefined) {
                 const newToken = query["http://localhost:3000/getToken#access_token"] as string;
-                setAccessToken(newToken);
+                props.callback(newToken);
             }
         }
 
@@ -44,16 +41,6 @@ export const LoginButton = (props: LoginButtonProps) => {
             case "vk": return vkLogo;
         }
     }
-
-    useEffect(() => {
-        console.log(props.imgLogo.src);
-    }, []);
-
-    useEffect(() => {
-        if (accessToken != null) {
-            props.callback(accessToken);
-        }
-    }, [accessToken]);
 
     return (
         <button className={`btn btn-logo ${props.className} my-1`} onClick={login}>
