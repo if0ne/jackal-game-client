@@ -5,10 +5,7 @@ export const AxiosContext = createContext<any>(null);
 
 export const AxiosProvider = ({children}: {children: ReactNode}) => {
     const axiosInstance = axios.create({
-        baseURL: 'url',
-        headers: {
-           "x-api-key": "secret-key"
-        }
+        baseURL: 'http://localhost:8080',
     });
 
     const setTokenHeader = (token: string) => {

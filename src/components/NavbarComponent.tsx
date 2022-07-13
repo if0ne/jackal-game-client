@@ -1,10 +1,12 @@
 import {Button, Container, Nav, Navbar} from "react-bootstrap";
 import {ContainerComponent} from "./ContainerComponent";
 import {useNavigate} from "react-router";
+import {useAuth} from "../hook/useAuth";
 
 export const NavbarComponent = () => {
 
     const navigate = useNavigate();
+    const { user, logOut } = useAuth();
 
     return (
         <Navbar bg="light" expand="lg">
@@ -18,7 +20,17 @@ export const NavbarComponent = () => {
                     </Nav>
                     <div className="d-flex">
                         <Nav className="me-auto">
-                            <Button onClick={() => navigate('/login')}>Войти</Button>
+                            {
+                                user.role === "GUEST" &&
+                                <Button onClick={() => navigate('/login')}>Войти</Button>
+                            }
+                            {
+                                user.role !== "GUEST" &&
+                                <div>
+                                    <span>{user.name}</span>
+                                    <Button onClick={() => logOut(() => {})}>Выйти</Button>
+                                </div>
+                            }
                         </Nav>
                     </div>
                 </Navbar.Collapse>

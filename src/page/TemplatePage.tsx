@@ -11,5 +11,6 @@ export const TemplatePage = (props: any) => {
                 </div>
                 <FooterComponent/>
             </div>
-        </div>)
+        </div>
+    );
 }
