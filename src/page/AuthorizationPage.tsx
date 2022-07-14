@@ -1,9 +1,10 @@
 import {AuthorizationForm} from "../components/auth_page/AuthorizationForm";
+import {RequiredRoles} from "../components/RequiredRoles";
 
-function AuthorizationPage() {
+export const AuthorizationPage = () => {
     return (
-        <AuthorizationForm/>
+        <RequiredRoles roles={["GUEST"]} isPage={true}>
+            <AuthorizationForm/>
+        </RequiredRoles>
     );
 }
-
-export default AuthorizationPage;

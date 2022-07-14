@@ -1,12 +1,47 @@
-import {Button, Container, Nav, Navbar} from "react-bootstrap";
+import "./NavbarComponent.css";
+
+import {Button, Dropdown, DropdownButton, Nav, Navbar, Spinner} from "react-bootstrap";
 import {ContainerComponent} from "./ContainerComponent";
 import {useNavigate} from "react-router";
+
 import {useAuth} from "../hook/useAuth";
+import {RequiredRoles} from "./RequiredRoles";
 
 export const NavbarComponent = () => {
-
     const navigate = useNavigate();
-    const { user, logOut } = useAuth();
+    const { user, logOut, isLoading } = useAuth();
+
+    const profileTitle = () => {
+        return (
+            <span>
+                <span><img src={user.pictureUrl} className="navbar-profile-picture mx-2"/></span>
+                <span>{user.name}</span>
+            </span>
+        );
+    };
+
+    const navbarButtons = () => {
+        if (isLoading) {
+            return (
+                <Spinner animation={"border"}/>
+            );
+        } else {
+            return (
+                <Nav className="me-auto">
+                    <RequiredRoles roles={["GUEST"]}>
+                        <Button onClick={() => navigate('/login')}>Войти</Button>
+                    </RequiredRoles>
+                    <RequiredRoles roles={["USER", "ADMIN"]}>
+                        <DropdownButton align="end" id="dropdown-basic" variant="light" title={profileTitle()} className="dropdown-profile">
+                            <Dropdown.Item href="/profile">Профиль</Dropdown.Item>
+                            <Dropdown.Divider />
+                            <Dropdown.Item onClick={() => logOut(() => {})}>Выйти</Dropdown.Item>
+                        </DropdownButton>
+                    </RequiredRoles>
+                </Nav>
+            );
+        }
+    }
 
     return (
         <Navbar bg="light" expand="lg">
@@ -16,26 +51,13 @@ export const NavbarComponent = () => {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link href="/games">Поиск игр</Nav.Link>
-                        <Nav.Link href="#link">Правила</Nav.Link>
+                        <Nav.Link href="/rules">Правила</Nav.Link>
                     </Nav>
                     <div className="d-flex">
-                        <Nav className="me-auto">
-                            {
-                                user.role === "GUEST" &&
-                                <Button onClick={() => navigate('/login')}>Войти</Button>
-                            }
-                            {
-                                user.role !== "GUEST" &&
-                                <div>
-                                    <span>{user.name}</span>
-                                    <Button onClick={() => logOut(() => {})}>Выйти</Button>
-                                </div>
-                            }
-                        </Nav>
+                        {navbarButtons()}
                     </div>
                 </Navbar.Collapse>
             </ContainerComponent>
         </Navbar>
     );
-
 }

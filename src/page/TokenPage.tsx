@@ -1,6 +1,6 @@
 import {useEffect} from "react";
 
-function TokenPage() {
+export const TokenPage = () => {
     useEffect(() => {
         window.close();
 
@@ -15,5 +15,3 @@ function TokenPage() {
         </div>
     )
 }
-
-export default TokenPage;

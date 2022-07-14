@@ -1,0 +1,21 @@
+.dropdown-profile > button {
+    padding: 0;
+}
+
+.dropdown-profile > .btn-light.dropdown-toggle:focus {
+    box-shadow: none;
+}
+
+.dropdown-profile > .btn-light.dropdown-toggle:active {
+    box-shadow: none;
+}
+
+.dropdown-profile > .btn-light.dropdown-toggle:hover {
+    box-shadow: none;
+}
+
+.navbar-profile-picture {
+    border-radius: 100%;
+    width: 36px;
+    height: 36px;
+}

@@ -6,36 +6,38 @@ type AccessTokenType = {
     iat: number,
     permissions: string,
     sub: string,
-    username: string
+    username: string,
+    picture_url: string,
 }
 
 export type User = {
-    id: number,
+    id: string,
     role: UserRole,
     name: string,
+    pictureUrl: string,
 };
 
 export const GUEST_USER: User = {
-    id: 0,
+    id: "0",
     role: "GUEST",
-    name: "Гость"
+    name: "Гость",
+    pictureUrl: ""
 }
 
 function getUserRoleFromString(permission: string) {
     let splitted = permission.split(", ");
-    
+
     return splitted[0] as UserRole;
 }
 
 export function getUserFromToken(token: string) {
-    let decoded = JwtDecode<AccessTokenType>(token);
+    const decoded = JwtDecode<AccessTokenType>(token);
+    const role = getUserRoleFromString(decoded.permissions);
 
     return {
-        //@ts-ignore
-        id: decoded.sub as number,
-        //@ts-ignore
+        id: decoded.sub,
         name: decoded.username,
-        //@ts-ignore
-        role: getUserRoleFromString(decoded.permissions)
+        role: role,
+        pictureUrl: decoded.picture_url
     } as User;
 }

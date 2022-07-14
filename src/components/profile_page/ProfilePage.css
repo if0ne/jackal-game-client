@@ -1,0 +1,26 @@
+.btn-avatar {
+    background: #000;
+    border: none;
+    border-radius: 100%;
+    display: inline-block;
+    padding: 0;
+    position: relative;
+}
+
+.btn-avatar > img {
+    border-radius: 100%;
+    width: 100%;
+}
+
+.btn-avatar > img:hover {
+    opacity: 0.8;
+}
+
+.btn-avatar > span {
+    color: #fff;
+    height: 100%;
+    left: 0;
+    top: 50%;
+    position: absolute;
+    width: 100%;
+}

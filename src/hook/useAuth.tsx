@@ -8,21 +8,23 @@ import {useNavigate} from "react-router";
 export const AuthContext = createContext<any>(null);
 
 export const AuthProvider = ({children}: {children: ReactNode}) => {
-    const [user, setUser] = useState<User>(GUEST_USER);
+    const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
+    const [isLoading, setLoading] = useState(true);
 
     const {setTokenHeader, getRequest, postRequest} = useAxios();
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        let token = localStorage.getItem("token");
+        const token = localStorage.getItem("token");
         setToken(token);
         setTokenHeader(token);
     }, []);
 
     useEffect(() => {
-        refreshUser();
+        setLoading(true);
+        refreshUser().finally(() => setLoading(false));
     }, [token]);
 
     const setAuthTokens = (token: string, refreshToken: string) => {
@@ -32,11 +34,11 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
         setTokenHeader(token);
     }
 
-    const refreshUser = () => {
+    const refreshUser = async () => {
         if (token) {
-            setUser(getUserFromToken(token));
+            await setUser(getUserFromToken(token));
         } else {
-            setUser(GUEST_USER);
+            await setUser(GUEST_USER);
         }
     }
 
@@ -65,7 +67,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 
         if (response.data.responseStatus === "OK") {
             setAuthTokens(response.data.accessToken, response.data.refreshToken);
-            navigate("/");
+            refreshUser().finally(() => navigate("/"));
         }
 
     };
@@ -75,7 +77,6 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
         localStorage.removeItem("refreshToken");
         setToken(null);
         setTokenHeader(null);
-
         callback();
         navigate("/");
     }
@@ -90,6 +91,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 
     const value = {
         user,
+        isLoading,
         signIn,
         logOut,
         getAuthRequest,
