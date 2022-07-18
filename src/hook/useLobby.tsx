@@ -47,7 +47,6 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
         for (let user of users) {
             // @ts-ignore
             let reqUser = await getAuthRequest(`/api/user/info?userId=${user.userId}`, {});
-            console.log(reqUser);
             members.set(user.userId, {
                 name: reqUser.data.userName,
                 pictureUrl: reqUser.data.userPictureUrl,
@@ -55,8 +54,6 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                 status: user.status
             });
         }
-
-        console.log(members);
 
         return members;
     };
@@ -82,7 +79,6 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
 
             lobbyClient?.subscribe(userSub, (message) => {
                 let objectFromMessage = JSON.parse(message.body);
-                console.log(objectFromMessage);
                 switch (objectFromMessage.type) {
                     case "CONNECTED_INFO_FOR_ONE": {
                         let rawUsers = objectFromMessage.usersInLobby;
@@ -95,7 +91,6 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                             };
 
                             setLobby(currentLobby);
-                            console.log(currentLobby);
                             SetNewMessage((value) => {
                                 return !value;
                             });
@@ -115,7 +110,6 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
             });
             lobbyClient?.subscribe(lobbySub, (message) => {
                 let objectFromMessage = JSON.parse(message.body);
-                console.log(objectFromMessage);
                 switch (objectFromMessage.type) {
                     case "CONNECTED_INFO_FOR_ALL": {
                         getAuthRequest(`/api/user/info?userId=${objectFromMessage.connectedUserId}`, {}).then((value: any) => {

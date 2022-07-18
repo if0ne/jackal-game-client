@@ -33,8 +33,8 @@
 }
 
 .game-list-current-lobby-avatar {
+    align-self: center;
     border-radius: 100%;
-    height: 100%;
     width: 100%;
 }
 
@@ -56,4 +56,11 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+}
+
+.star {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    height: 100%;
 }

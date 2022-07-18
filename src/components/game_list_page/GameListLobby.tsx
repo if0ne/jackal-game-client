@@ -4,12 +4,19 @@ import {ContainerComponent} from "../ContainerComponent";
 import {GameListMemberCard} from "./GameListMemberCard";
 import {GameListJoinButton} from "./GameListJoinButton";
 import {Lobby} from "../models/Lobby";
+import {useLobby} from "../../hook/useLobby";
 
 type GameListLobbyProps = {
     lobby: Lobby,
 };
 
 export const GameListLobby = (props: GameListLobbyProps) => {
+
+    const { lobby, joinLobby } = useLobby();
+
+    const joinLobbyCallback = () => {
+        joinLobby(props.lobby.title, "");
+    }
 
     const getLobbyCards = () => {
         let cards = [];
@@ -18,7 +25,7 @@ export const GameListLobby = (props: GameListLobbyProps) => {
             if (typeof props.lobby.members[i] !== "undefined") {
                 cards.push(<GameListMemberCard member={props.lobby.members[i]} key={i}/>);
             } else {
-                cards.push(<GameListJoinButton isEnabled={i < 4} key={i}/>)
+                cards.push(<GameListJoinButton isEnabled={i < 4 && props.lobby.isPublic && !lobby} joinLobbyFunction={joinLobbyCallback} key={i}/>)
             }
         }
 

@@ -14,10 +14,6 @@ type GameListCurrentLobbyMemberProps = {
 
 export const GameListCurrentLobbyMember = (props: GameListCurrentLobbyMemberProps) => {
 
-    useEffect(() => {
-        console.log(props.member);
-    }, []);
-
     const star = () => {
         return (
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -31,23 +27,25 @@ export const GameListCurrentLobbyMember = (props: GameListCurrentLobbyMemberProp
     return (
         <ContainerComponent className="p-0 py-2">
             <Row className="m-0">
-                <Col sm={2} className="p-0">
+                <Col sm={2} className="p-0 d-flex">
                     <img src={props.member.info.pictureUrl}
                          className={props.member.info.status === "NOT_READY" ? "game-list-current-lobby-avatar not-ready-status" : " game-list-current-lobby-avatar ready-status"}
                     />
                 </Col>
-                <Col sm={9} className="px-2">
-                    <span className="center-align game-list-current-lobby-name">
-                        {props.member.info.name}
-                    </span>
-                    {
-                        props.member.info.isHost && star()
-                    }
+                <Col sm={8} className="px-2">
+                    <p className="game-list-current-lobby-name py-0">
+                        <span className="center-align">{props.member.info.name}</span>
+                    </p>
                 </Col>
-                <Col sm={1} className="p-0">
+                <Col sm={2} className="px-0">
                     {
-                        props.kickable &&
-                        <Button variant="light" onClick={props.kickFunction}>X</Button>
+                        props.member.info.isHost &&
+                        <div className="star">
+                            {star()}
+                        </div>
+                    }
+                    {
+                        props.kickable && <Button variant="light" onClick={props.kickFunction}>X</Button>
                     }
                 </Col>
             </Row>
