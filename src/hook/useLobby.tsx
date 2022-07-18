@@ -52,7 +52,7 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                 name: reqUser.data.userName,
                 pictureUrl: reqUser.data.userPictureUrl,
                 isHost: user.userId === hostId,
-                status: reqUser.data.status
+                status: user.status
             });
         }
 
@@ -62,16 +62,13 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
     };
 
     const send = (action: string, body: any) => {
-        if (lobbyClient?.connected) {
-            // @ts-ignore
-            lobbyClient?.send(`/lobby/${action}/${currentLobby.id}`, {}, JSON.stringify(body));
-        }
+        // @ts-ignore
+        lobbyClient?.send(`/lobby/${action}/${currentLobby.id}`, {}, JSON.stringify(body));
     };
 
     const connect = (userSub: string, lobbySub: string, token: string) => {
         lobbySocket = new SockJS("http://localhost:8081/lobby-connect/");
         lobbyClient = Stomp.over(lobbySocket);
-
         lobbyClient?.connect({
             Authorization: token
         }, () => {
@@ -122,12 +119,20 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                 switch (objectFromMessage.type) {
                     case "CONNECTED_INFO_FOR_ALL": {
                         getAuthRequest(`/api/user/info?userId=${objectFromMessage.connectedUserId}`, {}).then((value: any) => {
-                            const member = value.data;
-                            currentLobby?.members.set(objectFromMessage.connectedUserId, member);
-                            setLobby(currentLobby);
-                            SetNewMessage((value) => {
-                                return !value;
-                            });
+                            if (!currentLobby?.members.has(objectFromMessage.connectedUserId)) {
+                                const member = {
+                                    name: value.data.userName,
+                                    pictureUrl: value.data.userPictureUrl,
+                                    isHost: false,
+                                    status: "NOT_READY"
+                                };
+
+                                currentLobby?.members.set(objectFromMessage.connectedUserId, member);
+                                setLobby(currentLobby);
+                                SetNewMessage((value) => {
+                                    return !value;
+                                });
+                            }
                         });
                         break;
                     }
