@@ -1,16 +1,12 @@
 import {Card} from "react-bootstrap";
 
-import LobbyMember from "./LobbyMember";
 import {ContainerComponent} from "../ContainerComponent";
 import {GameListMemberCard} from "./GameListMemberCard";
 import {GameListJoinButton} from "./GameListJoinButton";
+import {Lobby} from "../models/Lobby";
 
 type GameListLobbyProps = {
-    lobbyName: string,
-    gameMode: string,
-    hasPassword: boolean,
-    maxNumberPlayers: number,
-    members: Array<LobbyMember>
+    lobby: Lobby,
 };
 
 export const GameListLobby = (props: GameListLobbyProps) => {
@@ -19,10 +15,10 @@ export const GameListLobby = (props: GameListLobbyProps) => {
         let cards = [];
 
         for (let i = 0; i < 4; i++) {
-            if (typeof props.members[i] !== "undefined") {
-                cards.push(<GameListMemberCard member={props.members[i]} key={i}/>);
+            if (typeof props.lobby.members[i] !== "undefined") {
+                cards.push(<GameListMemberCard member={props.lobby.members[i]} key={i}/>);
             } else {
-                cards.push(<GameListJoinButton isEnabled={i < props.maxNumberPlayers} key={i}/>)
+                cards.push(<GameListJoinButton isEnabled={i < 4} key={i}/>)
             }
         }
 
@@ -42,9 +38,12 @@ export const GameListLobby = (props: GameListLobbyProps) => {
     return (
         <Card className="mb-4">
             <Card.Body>
-                <Card.Title>{props.lobbyName} {props.hasPassword && padlock()}</Card.Title>
+                <Card.Title>{props.lobby.title} {!props.lobby.isPublic && padlock()}</Card.Title>
                 <Card.Text>
-                    Режим игры: {props.gameMode}
+                    {
+                        //TODO: Вывод режима игры
+                    }
+                    Режим игры: 1 vs 1 vs 1 vs 1
                 </Card.Text>
             </Card.Body>
             <ContainerComponent className="pb-4">

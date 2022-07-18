@@ -1,4 +1,4 @@
-import useAxios from "./useAxios";
+import {useAxios} from "./useAxios";
 import {getUserFromToken, GUEST_USER, User} from "../components/models/User";
 
 import {createContext, ReactNode, useContext, useEffect, useState} from "react";
@@ -11,6 +11,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [isLoading, setLoading] = useState(true);
+    const [initLoading, setInitLoading] = useState(true);
 
     const {setTokenHeader, getRequest, postRequest} = useAxios();
 
@@ -20,6 +21,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
         const token = localStorage.getItem("token");
         setToken(token);
         setTokenHeader(token);
+        setInitLoading(false);
     }, []);
 
     useEffect(() => {
@@ -43,14 +45,26 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
     }
 
     const refreshToken = async () => {
+        let token = localStorage.getItem("token");
+        let refreshToken = localStorage.getItem("refreshToken");
+        let response = await postRequest("/api/refresh", {
+            accessToken: token,
+            refreshToken: refreshToken
+        });
 
+        if (response.data.responseStatus === "OK") {
+            setAuthTokens(response.data.accessToken, response.data.refreshToken);
+        }
     }
 
     const authRequest = async (
         route: string,
         body: any,
-        request: (route: string, body: any) => Promise<AxiosResponse<any, any>>
+        request: (route: string, body: any) => Promise<AxiosResponse>
     ) => {
+        if (token === null) {
+            return;
+        }
         let response = await request(route, body);
         if (response.status === 401) {
             await refreshToken();
@@ -62,12 +76,12 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 
     const signIn = async (accessToken: string, provider: string) => {
         let response = await postRequest(`/api/auth/${provider}`, {
-           "accessToken": accessToken
+           accessToken: accessToken
         });
 
         if (response.data.responseStatus === "OK") {
             setAuthTokens(response.data.accessToken, response.data.refreshToken);
-            refreshUser().finally(() => navigate("/"));
+            refreshUser().then(() => navigate("/"));
         }
 
     };
@@ -99,7 +113,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
     };
 
     return <AuthContext.Provider value={value}>
-        {children}
+        {!initLoading && children}
     </AuthContext.Provider>
 }
 

@@ -31,6 +31,6 @@ export const AxiosProvider = ({children}: {children: ReactNode}) => {
     </AxiosContext.Provider>;
 }
 
-export default function useAxios() {
+export function useAxios() {
     return useContext(AxiosContext);
 }

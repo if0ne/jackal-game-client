@@ -7,19 +7,20 @@ import {BrowserRouter} from "react-router-dom";
 import App from './App';
 import {AxiosProvider} from "./hook/useAxios";
 import {AuthProvider} from "./hook/useAuth";
+import {LobbyProvider} from "./hook/useLobby";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
 root.render(
-  <React.StrictMode>
       <AxiosProvider>
           <BrowserRouter>
               <AuthProvider>
-                  <App/>
+                  <LobbyProvider>
+                      <App/>
+                  </LobbyProvider>
               </AuthProvider>
           </BrowserRouter>
       </AxiosProvider>
-  </React.StrictMode>
 );
