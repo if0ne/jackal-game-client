@@ -3,7 +3,6 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
 import {useAuth} from "./useAuth";
-import {Lobby} from "../components/models/Lobby";
 import {WsLobby} from "../components/models/WsLobby";
 import {LobbyMember} from "../components/models/LobbyMember";
 import JwtDecode from "jwt-decode";
@@ -35,12 +34,16 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                     );
                 }
             });
+
+        return () => {
+            disconnect();
+        }
     }, []);
 
     const send = (action: string, body: any) => {
         if (lobbyClient?.connected) {
             // @ts-ignore
-            lobbyClient?.send(`/lobby/${action}/${currentLobby.id}`, {}, body);
+            lobbyClient?.send(`/lobby/${action}/${currentLobby.id}`, {}, JSON.stringify(body));
         }
     };
 
@@ -58,7 +61,6 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                 id: lobbyId,
                 members: new Map()
             };
-            setLobby(currentLobby);
 
             lobbyClient?.subscribe(userSub, (message) => {
                 let objectFromMessage = JSON.parse(message.body);
@@ -72,8 +74,8 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
 
                             return {
                                 id: value.userId,
-                                name: user.userName,
-                                pictureUrl: user.userPictureUrl,
+                                name: user.data.userName,
+                                pictureUrl: user.data.userPictureUrl,
                                 isHost: value.userId === objectFromMessage.hostId,
                                 status: value.status,
                             };
@@ -95,7 +97,6 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                                 members: members,
                             };
 
-                            console.log(currentLobby);
                             setLobby(currentLobby);
                         });
                         break;
@@ -130,24 +131,26 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                         // @ts-ignore
                         currentLobby.members.delete(leavedUserId);
                         // @ts-ignore
-                        currentLobby.members[hostId].isHost = true;
+                        currentLobby.members.get(hostId).isHost = true;
 
                         setLobby(currentLobby);
-
                         break;
                     }
                     case "CHANGED_STATE_INFO_FOR_ALL": {
                         const userId = objectFromMessage.lobbyMemberInfo.userId;
-                        const status = objectFromMessage.lobbyMemberInfo.status;
+                        //@ts-ignore
+                        currentLobby.members.get(userId).status = objectFromMessage.lobbyMemberInfo.status;
 
                         //@ts-ignore
-                        currentLobby.members[userId].status = status;
+                        setLobby(currentLobby);
                         break;
                     }
                     case "KICKED_INFO_FOR_ALL": {
                         const kickedUserId = objectFromMessage.kickedUserId;
                         // @ts-ignore
                         currentLobby.members.delete(kickedUserId);
+
+                        setLobby(currentLobby);
                         break;
                     }
                     //TODO: Error Handling
@@ -166,18 +169,15 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
         });
 
         lobbySocket = null;
-
-        currentLobby = null;
         setLobby(null);
     }
 
     const createLobby = async (title: string, password: string) => {
         let response = await postAuthRequest("/api/lobby/create", {
             lobbyTitle: title,
-            lobbyPassword: password
+            lobbyPassword: password.trim().length !== 0 ? password : null
         });
 
-        console.log(response.data);
         if (response.data.responseStatus === "OK") {
             connect(
                 response.data.webSocketInfo.subscriptionUserUrl,
@@ -190,10 +190,9 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
     const joinLobby = async (name: string, password: string) => {
         let response = await postAuthRequest("/api/lobby/join", {
             lobbyTitle: name,
-            lobbyPassword: password
+            lobbyPassword: password.trim().length !== 0 ? password : null
         });
 
-        console.log(response.data);
         if (response.data.responseStatus === "OK") {
             connect(
                 response.data.webSocketInfo.subscriptionUserUrl,
@@ -208,7 +207,7 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
     }
 
     const leaveLobby = async () => {
-        send("leaving", {});
+        send("leave", {});
     }
 
     const toggleReady = async () => {

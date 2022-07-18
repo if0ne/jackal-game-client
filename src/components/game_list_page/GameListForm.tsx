@@ -9,7 +9,6 @@ import {GameListCurrentLobby} from "./GameListCurrentLobby";
 import {useLobby} from "../../hook/useLobby";
 import {useEffect, useState} from "react";
 import {Lobby} from "../models/Lobby";
-import {useAxios} from "../../hook/useAxios";
 import {useAuth} from "../../hook/useAuth";
 import {CondRenderComponent} from "../CondRenderComponent";
 import {GameListLobbyCreation} from "./GameListLobbyCreation";
@@ -46,7 +45,7 @@ export const GameListForm = () => {
             <Row className="m-0">
                 <Col sm={3} className="p-0">
                     <CondRenderComponent cond={lobby}>
-                        <GameListCurrentLobby lobby={lobby}/>
+                        <GameListCurrentLobby/>
                     </CondRenderComponent>
                     <CondRenderComponent cond={!lobby}>
                         <GameListLobbyCreation createFunction={createLobbyCallback}/>
