@@ -11,13 +11,13 @@ export const GameListCurrentLobby = () => {
     const [members, setMembers] = useState(Array(0));
 
     const { user, isLoading } = useAuth();
-    const { lobby, kickLobbyMember, toggleReady, leaveLobby } = useLobby();
+    const { lobby, kickLobbyMember, toggleReady, leaveLobby, newMessage } = useLobby();
 
     const [owner, setOwner] = useState(null);
 
     useEffect(() => {
         getMemberList();
-    }, [lobby]);
+    }, [lobby, newMessage]);
 
     useEffect(() => {
         setOwner(findOwn());
@@ -68,7 +68,6 @@ export const GameListCurrentLobby = () => {
                 info: lobby.members.get(id)
             }
         });
-
         setMembers(users);
     };
 

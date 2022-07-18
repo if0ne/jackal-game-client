@@ -17,6 +17,7 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
 
     const [isConnected, setConnected] = useState(false);
     const [lobby, setLobby] = useState<WsLobby | null>(null);
+    const [newMessage, SetNewMessage] = useState(true);
 
     const { getAuthRequest, postAuthRequest } = useAuth();
 
@@ -39,6 +40,26 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
             disconnect();
         }
     }, []);
+
+    const getMembersInfo = async (users: any, hostId: string) => {
+        const members = new Map<string, LobbyMember>();
+
+        for (let user of users) {
+            // @ts-ignore
+            let reqUser = await getAuthRequest(`/api/user/info?userId=${user.userId}`, {});
+            console.log(reqUser);
+            members.set(user.userId, {
+                name: reqUser.data.userName,
+                pictureUrl: reqUser.data.userPictureUrl,
+                isHost: user.userId === hostId,
+                status: reqUser.data.status
+            });
+        }
+
+        console.log(members);
+
+        return members;
+    };
 
     const send = (action: string, body: any) => {
         if (lobbyClient?.connected) {
@@ -69,28 +90,7 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                     case "CONNECTED_INFO_FOR_ONE": {
                         let rawUsers = objectFromMessage.usersInLobby;
 
-                        Promise.all(rawUsers.map(async (value: any) => {
-                            let user = await getAuthRequest(`/api/user/info?userId=${value.userId}`, {});
-
-                            return {
-                                id: value.userId,
-                                name: user.data.userName,
-                                pictureUrl: user.data.userPictureUrl,
-                                isHost: value.userId === objectFromMessage.hostId,
-                                status: value.status,
-                            };
-                        })).then((values) => {
-                            const members = new Map<string, LobbyMember>();
-
-                            for (let value of values) {
-                                members.set(value.id, {
-                                    name: value.name,
-                                    pictureUrl: value.pictureUrl,
-                                    isHost: value.isHost,
-                                    status: value.status,
-                                });
-                            }
-
+                        getMembersInfo(rawUsers, objectFromMessage.hostId).then((members) => {
                             currentLobby = {
                                 // @ts-ignore
                                 id: currentLobby.id,
@@ -98,6 +98,10 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                             };
 
                             setLobby(currentLobby);
+                            console.log(currentLobby);
+                            SetNewMessage((value) => {
+                                return !value;
+                            });
                         });
                         break;
                     }
@@ -121,6 +125,9 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                             const member = value.data;
                             currentLobby?.members.set(objectFromMessage.connectedUserId, member);
                             setLobby(currentLobby);
+                            SetNewMessage((value) => {
+                                return !value;
+                            });
                         });
                         break;
                     }
@@ -134,6 +141,9 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                         currentLobby.members.get(hostId).isHost = true;
 
                         setLobby(currentLobby);
+                        SetNewMessage((value) => {
+                            return !value;
+                        });
                         break;
                     }
                     case "CHANGED_STATE_INFO_FOR_ALL": {
@@ -143,6 +153,9 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
 
                         //@ts-ignore
                         setLobby(currentLobby);
+                        SetNewMessage((value) => {
+                            return !value;
+                        });
                         break;
                     }
                     case "KICKED_INFO_FOR_ALL": {
@@ -151,6 +164,9 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                         currentLobby.members.delete(kickedUserId);
 
                         setLobby(currentLobby);
+                        SetNewMessage((value) => {
+                            return !value;
+                        });
                         break;
                     }
                     //TODO: Error Handling
@@ -170,6 +186,9 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
 
         lobbySocket = null;
         setLobby(null);
+        SetNewMessage((value) => {
+            return !value;
+        });
     }
 
     const createLobby = async (title: string, password: string) => {
@@ -234,6 +253,7 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
 
         lobby,
         isConnected,
+        newMessage,
     };
 
     return <LobbyContext.Provider value={value}>

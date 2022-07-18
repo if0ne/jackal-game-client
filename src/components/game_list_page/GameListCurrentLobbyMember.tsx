@@ -1,6 +1,7 @@
 import {LobbyMember} from "../models/LobbyMember";
 import {ContainerComponent} from "../ContainerComponent";
 import {Button, Col, Row} from "react-bootstrap";
+import {useEffect} from "react";
 
 type GameListCurrentLobbyMemberProps = {
     kickable: boolean,
@@ -12,6 +13,10 @@ type GameListCurrentLobbyMemberProps = {
 }
 
 export const GameListCurrentLobbyMember = (props: GameListCurrentLobbyMemberProps) => {
+
+    useEffect(() => {
+        console.log(props.member);
+    }, []);
 
     const star = () => {
         return (
