@@ -1,6 +1,12 @@
 .welcome-image {
-    background: darkgray;
+    background: #228DB7;
     height: 426px;
+}
+
+@media screen and (max-width: 935px) {
+    .welcome-image {
+        display: none;
+    }
 }
 
 .welcome-card {
@@ -13,9 +19,5 @@
 
 .welcome-card-title {
     font-weight: bold;
-}
-
-footer {
-    background: darkgray;
-    height: 128px;
+    text-align: center;
 }

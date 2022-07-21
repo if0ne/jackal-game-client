@@ -1,7 +1,6 @@
 import {LobbyMember} from "../models/LobbyMember";
 import {ContainerComponent} from "../ContainerComponent";
 import {Button, Col, Row} from "react-bootstrap";
-import {useEffect} from "react";
 
 type GameListCurrentLobbyMemberProps = {
     kickable: boolean,
@@ -24,12 +23,23 @@ export const GameListCurrentLobbyMember = (props: GameListCurrentLobbyMemberProp
         );
     };
 
+    const getStatusStyle = (status: string) => {
+        switch (status) {
+            case "NOT_READY":
+                return "not-ready-status";
+            case "READY":
+                return "ready-status";
+            case "IN_GAME":
+                return "in-game-status";
+        }
+    }
+
     return (
         <ContainerComponent className="p-0 py-2">
             <Row className="m-0">
                 <Col sm={2} className="p-0 d-flex">
                     <img src={props.member.info.pictureUrl}
-                         className={props.member.info.status === "NOT_READY" ? "game-list-current-lobby-avatar not-ready-status" : " game-list-current-lobby-avatar ready-status"}
+                         className={`game-list-current-lobby-avatar ${getStatusStyle(props.member.info.status)}`}
                     />
                 </Col>
                 <Col sm={8} className="px-2">

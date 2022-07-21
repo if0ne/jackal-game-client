@@ -7,6 +7,7 @@ import {WelcomePage} from "./page/WelcomePage";
 import {GameListPage} from "./page/GameListPage";
 import {ProfilePage} from "./page/ProfilePage";
 import {RulePage} from "./page/RulePage";
+import {GameplayPage} from "./page/GameplayPage";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/games" element={<GameListPage/>}/>
         <Route path="/profile" element={<ProfilePage/>}/>
         <Route path="/rules" element={<RulePage/>}/>
+        <Route path="/game" element={<GameplayPage/>}/>
 
         <Route path="/login" element={<AuthorizationPage/>}/>
         <Route path="/getToken" element={<TokenPage/>}/>

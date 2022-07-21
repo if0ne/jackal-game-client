@@ -6,6 +6,7 @@ import {useAuth} from "./useAuth";
 import {WsLobby} from "../components/models/WsLobby";
 import {LobbyMember} from "../components/models/LobbyMember";
 import JwtDecode from "jwt-decode";
+import {Button, Modal} from "react-bootstrap";
 
 let lobbySocket: WebSocket | null = null;
 let lobbyClient: Stomp.Client | null = null;
@@ -17,9 +18,12 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
 
     const [isConnected, setConnected] = useState(false);
     const [lobby, setLobby] = useState<WsLobby | null>(null);
-    const [newMessage, SetNewMessage] = useState(true);
+    const [newMessage, setNewMessage] = useState(true);
 
     const { getAuthRequest, postAuthRequest } = useAuth();
+
+    const [showError, setShowError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
         getAuthRequest("/api/lobby/connection-info")
@@ -64,7 +68,7 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
     };
 
     const connect = (userSub: string, lobbySub: string, token: string) => {
-        lobbySocket = new SockJS("http://localhost:8081/lobby-connect/");
+        lobbySocket = new SockJS(`${process.env.REACT_APP_LOBBY_SERVICE_URL}/lobby-connect/`);
         lobbyClient = Stomp.over(lobbySocket);
         lobbyClient?.connect({
             Authorization: token
@@ -91,7 +95,7 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                             };
 
                             setLobby(currentLobby);
-                            SetNewMessage((value) => {
+                            setNewMessage((value) => {
                                 return !value;
                             });
                         });
@@ -123,7 +127,7 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
 
                                 currentLobby?.members.set(objectFromMessage.connectedUserId, member);
                                 setLobby(currentLobby);
-                                SetNewMessage((value) => {
+                                setNewMessage((value) => {
                                     return !value;
                                 });
                             }
@@ -140,7 +144,7 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                         currentLobby.members.get(hostId).isHost = true;
 
                         setLobby(currentLobby);
-                        SetNewMessage((value) => {
+                        setNewMessage((value) => {
                             return !value;
                         });
                         break;
@@ -152,7 +156,7 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
 
                         //@ts-ignore
                         setLobby(currentLobby);
-                        SetNewMessage((value) => {
+                        setNewMessage((value) => {
                             return !value;
                         });
                         break;
@@ -163,7 +167,27 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                         currentLobby.members.delete(kickedUserId);
 
                         setLobby(currentLobby);
-                        SetNewMessage((value) => {
+                        setNewMessage((value) => {
+                            return !value;
+                        });
+                        break;
+                    }
+                    case "CHECK_CONNECTION_REQUEST": {
+                        pongResponse().then(() => {});
+                        break;
+                    }
+                    case "LOBBY_NOT_READY_INFO_FOR_ALL": {
+                        const notConnectedIds = objectFromMessage.notConnectedUsersIds;
+                        const usersInLobby = objectFromMessage.usersInLobby;
+                        //@ts-ignore
+                        const notConnectedNames = notConnectedIds.map((value) => currentLobby.members.get(value).name);
+                        usersInLobby.forEach((value: any) => {
+                            //@ts-ignore
+                            currentLobby.members.get(value.userId).status = value.status;
+                        });
+                        setErrorMessage(`Ой-ой-ой некие шакалы не загрузились: [${notConnectedNames.join(", ")}]`);
+                        setShowError(true);
+                        setNewMessage((value) => {
                             return !value;
                         });
                         break;
@@ -185,7 +209,7 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
 
         lobbySocket = null;
         setLobby(null);
-        SetNewMessage((value) => {
+        setNewMessage((value) => {
             return !value;
         });
     }
@@ -199,7 +223,7 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
         if (response.data.responseStatus === "OK") {
             connect(
                 response.data.webSocketInfo.subscriptionUserUrl,
-                response.data.webSocketInfo.subscriptionLobbyUrl,
+                response.data.webSocketInfo.subscriptionGroupUrl,
                 response.data.token
             );
         }
@@ -214,7 +238,7 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
         if (response.data.responseStatus === "OK") {
             connect(
                 response.data.webSocketInfo.subscriptionUserUrl,
-                response.data.webSocketInfo.subscriptionLobbyUrl,
+                response.data.webSocketInfo.subscriptionGroupUrl,
                 response.data.token
             );
         }
@@ -238,6 +262,10 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
         });
     }
 
+    const pongResponse = async () => {
+        send("check-connection", {});
+    }
+
     const startGame = async () => {
 
     }
@@ -256,6 +284,17 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
     };
 
     return <LobbyContext.Provider value={value}>
+        <Modal show={showError} onHide={() => setShowError(false)}>
+            <Modal.Header closeButton>
+                <Modal.Title>Ошибка</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>{errorMessage}</Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={() => setShowError(false)}>
+                    Закрыть
+                </Button>
+            </Modal.Footer>
+        </Modal>
         {children}
     </LobbyContext.Provider>
 

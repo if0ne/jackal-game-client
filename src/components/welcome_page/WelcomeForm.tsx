@@ -8,9 +8,9 @@ import {WelcomeInfoCollection} from "./WelcomeInfoCollection";
 
 export const WelcomeForm = () => {
     return (
-        <div>
+        <>
             <WelcomeBanner/>
             <WelcomeInfoCollection/>
-        </div>
+        </>
     );
 }

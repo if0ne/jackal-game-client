@@ -17,7 +17,7 @@ export const GameListCurrentLobby = () => {
 
     useEffect(() => {
         getMemberList();
-    }, [lobby, newMessage]);
+    }, [lobby, newMessage])
 
     useEffect(() => {
         setOwner(findOwn());
@@ -41,6 +41,17 @@ export const GameListCurrentLobby = () => {
             return null;
         }
         return members.find((value) => value.id == user.id);
+    }
+
+    const isAllReady = () => {
+        //TODO: В зависимости от режима
+        const needCount = members.length === 4;
+        let isAllReady = true;
+        members.forEach((value) => {
+           isAllReady &&= (value.info.status === "READY");
+        });
+
+        return needCount && isAllReady;
     }
 
     const isKickable = (member: any) => {
@@ -86,13 +97,36 @@ export const GameListCurrentLobby = () => {
                 }
             </div>
             <CondRenderComponent cond={!isLoading}>
-                <Button variant="dark" className="w-100" onClick={toggleReadyCallback}>
+                <Button
+                    variant="dark"
+                    className="w-100"
+                    //@ts-ignore
+                    disabled={owner?.info.status === "IN_GAME"}
+                    onClick={toggleReadyCallback}
+                >
                     {
                         // @ts-ignore
                         owner && owner.info.status === "NOT_READY" ? "Готов" : "Не готов"
                     }
                 </Button>
-                <Button variant="dark" className="w-100 mt-2" onClick={leaveLobbyCallback}>
+                <CondRenderComponent cond={isHost()}>
+                    <Button
+                        variant="primary"
+                        className="w-100 mt-2"
+                        //@ts-ignore
+                        disabled={!isAllReady()}
+                        onClick={toggleReadyCallback}
+                    >
+                        Начать игру
+                    </Button>
+                </CondRenderComponent>
+                <Button
+                    variant="dark"
+                    className="w-100 mt-2"
+                    //@ts-ignore
+                    disabled={owner?.info.status === "IN_GAME"}
+                    onClick={leaveLobbyCallback}
+                >
                     Выйти
                 </Button>
             </CondRenderComponent>

@@ -1,0 +1,49 @@
+.game-container {
+    background: rgb(62, 91, 75);
+}
+
+.game-map {
+    aspect-ratio: 1/1;
+    flex-wrap: wrap;
+    height: 100vh;
+}
+
+.game-cell {
+    position: relative;
+    height: 7.69%;
+    width: 7.69%;
+}
+
+.game-cell-img {
+    aspect-ratio: 1/1;
+    border-radius: 10%;
+    padding: 2%;
+    position: absolute;
+    width: 100%;
+}
+
+.game-cell-container {
+    aspect-ratio: 1/1;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.game-cell-object-container {
+    aspect-ratio: 1/1;
+    position: relative;
+    width: 100%;
+}
+
+.game-cell-object-pirate {
+    aspect-ratio: 1/1;
+    border-radius: 100%;
+    position: absolute;
+    /*background: "#FF2E17";*/
+    width: 40%;
+}
+
+.choosed-cell {
+    border: 1px solid red;
+}

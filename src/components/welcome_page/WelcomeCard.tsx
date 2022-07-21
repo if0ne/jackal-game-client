@@ -1,5 +1,4 @@
 import {Card, Col} from "react-bootstrap";
-import {useEffect} from "react";
 
 type WelcomeCardProps = {
     title: string,

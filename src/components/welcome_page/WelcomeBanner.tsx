@@ -2,7 +2,7 @@ import {ContainerComponent} from "../ContainerComponent";
 import {Image} from "react-bootstrap";
 
 //@ts-ignore
-import navbarImage from "../../assets/test_image.jpg";
+import navbarImage from "../../assets/welcome_page/welcome-img.png";
 
 export const WelcomeBanner = () => {
     return (

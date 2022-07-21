@@ -8,6 +8,7 @@ import App from './App';
 import {AxiosProvider} from "./hook/useAxios";
 import {AuthProvider} from "./hook/useAuth";
 import {LobbyProvider} from "./hook/useLobby";
+import {GameProvider} from "./hook/useGameService";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -19,7 +20,9 @@ root.render(
           <BrowserRouter>
               <AuthProvider>
                   <LobbyProvider>
-                      <App/>
+                      <GameProvider>
+                          <App/>
+                      </GameProvider>
                   </LobbyProvider>
               </AuthProvider>
           </BrowserRouter>

@@ -1,0 +1,23 @@
+footer {
+    background: rgb(248, 249, 250);
+}
+
+.footer-developers {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-developers a {
+    color: rgba(0, 0, 0, 0.55);
+    text-decoration: none;
+}
+
+.footer-developers a:hover {
+    color: rgba(0, 0, 0, 0.75);
+    text-decoration: none;
+}
+
+.footer-title {
+    font-size: 1.25rem;
+    margin: 0;
+}
