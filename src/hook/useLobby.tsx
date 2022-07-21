@@ -7,6 +7,7 @@ import {WsLobby} from "../components/models/WsLobby";
 import {LobbyMember} from "../components/models/LobbyMember";
 import JwtDecode from "jwt-decode";
 import {Button, Modal} from "react-bootstrap";
+import {useNavigate} from "react-router";
 
 let lobbySocket: WebSocket | null = null;
 let lobbyClient: Stomp.Client | null = null;
@@ -21,6 +22,7 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
     const [newMessage, setNewMessage] = useState(true);
 
     const { getAuthRequest, postAuthRequest } = useAuth();
+    const navigate = useNavigate();
 
     const [showError, setShowError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -191,6 +193,9 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                             return !value;
                         });
                         break;
+                    }
+                    case "GAME_SESSION_CREATION_INFO_FOR_ALL": {
+                        navigate("/game");
                     }
                     //TODO: Error Handling
                 }
