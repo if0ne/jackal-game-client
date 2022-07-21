@@ -5,13 +5,15 @@ import {CondRenderComponent} from "../CondRenderComponent";
 import {useEffect, useState} from "react";
 import {useLobby} from "../../hook/useLobby";
 import {GameListCurrentLobbyMember} from "./GameListCurrentLobbyMember";
+import {useNavigate} from "react-router";
 
 export const GameListCurrentLobby = () => {
 
     const [members, setMembers] = useState(Array(0));
 
     const { user, isLoading } = useAuth();
-    const { lobby, kickLobbyMember, toggleReady, leaveLobby, newMessage } = useLobby();
+    const { lobby, kickLobbyMember, toggleReady, leaveLobby, startGame, newMessage } = useLobby();
+    const navigate = useNavigate();
 
     const [owner, setOwner] = useState(null);
 
@@ -45,7 +47,7 @@ export const GameListCurrentLobby = () => {
 
     const isAllReady = () => {
         //TODO: В зависимости от режима
-        const needCount = members.length === 4;
+        const needCount = members.length > 0;
         let isAllReady = true;
         members.forEach((value) => {
            isAllReady &&= (value.info.status === "READY");
@@ -69,6 +71,14 @@ export const GameListCurrentLobby = () => {
 
     const leaveLobbyCallback = () => {
         leaveLobby();
+    }
+
+    const startGameCallback = () => {
+        startGame().then((response: any) => {
+            if (response.responseStatus === "OK") {
+                navigate("/game");
+            }
+        });
     }
 
     const getMemberList = () => {
@@ -115,7 +125,7 @@ export const GameListCurrentLobby = () => {
                         className="w-100 mt-2"
                         //@ts-ignore
                         disabled={!isAllReady()}
-                        onClick={toggleReadyCallback}
+                        onClick={startGameCallback}
                     >
                         Начать игру
                     </Button>

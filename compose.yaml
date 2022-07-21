@@ -4,7 +4,7 @@ services:
   lobby-service:
     build: ./
     image: jackal-game-client
-    container_name: jackal-game-client
+    container_name: jackal_game-client
     ports:
       - "3000:3000"
     environment:

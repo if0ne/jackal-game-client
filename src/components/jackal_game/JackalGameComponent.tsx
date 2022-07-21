@@ -95,6 +95,22 @@ export const JackalGameComponent = () => {
         let y = Math.trunc(index / 13);
         let x = index % 13;
 
+        if (y === 0 && x === 6)  {
+            return cellBlackShip;
+        }
+
+        if (y === 12 && x === 6)  {
+            return cellWhiteShip;
+        }
+
+        if (y === 6 && x === 0)  {
+            return cellYellowShip;
+        }
+
+        if (y === 6 && x === 12)  {
+            return cellRedShip;
+        }
+
         if (x === 0 || y === 0 || x === 12 || y === 12 || (x === 1 && (y === 1 || y === 11)) || (x === 11 && (y === 1 || y === 11))) {
             return cellWater;
         } else {
@@ -102,12 +118,35 @@ export const JackalGameComponent = () => {
         }
     }
 
+    const getCommandColor = (index: number) => {
+        let y = Math.trunc(index / 13);
+        let x = index % 13;
+
+        if (y === 0 && x === 6)  {
+            return "#2c2e35";
+        }
+
+        if (y === 12 && x === 6)  {
+            return "#ffffff";
+        }
+
+        if (y === 6 && x === 0)  {
+            return "#ffda42";
+        }
+
+        if (y === 6 && x === 12)  {
+            return "#ff2e17";
+        }
+
+        return undefined;
+    }
+
     return (
         <div className="game-container">
             <div className="mx-auto d-flex game-map">
                 {
                     [...Array(13*13)].map((value, index) =>
-                        <Cell key={index} isChoosed={choosed == index} onClick={() => chooseCell(index)}>
+                        <Cell key={index} isChoosed={choosed == index} commandColor={getCommandColor(index)} onClick={() => chooseCell(index)}>
                             <img src={getCell(index)} className="game-cell-img" alt="cell"/>
                         </Cell>
                     )

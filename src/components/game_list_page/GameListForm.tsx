@@ -4,7 +4,7 @@ import {ContainerComponent} from "../ContainerComponent";
 import {GameListReconnection} from "./GameListReconnection";
 import {GameListController} from "./GameListController";
 import {GameList} from "./GameList";
-import {Button, Col, Form, FormControl, Row} from "react-bootstrap";
+import {Col, Row} from "react-bootstrap";
 import {GameListCurrentLobby} from "./GameListCurrentLobby";
 import {useLobby} from "../../hook/useLobby";
 import {useEffect, useState} from "react";
@@ -17,11 +17,18 @@ export const GameListForm = () => {
 
     const [lobbies, setLobbies] = useState<Array<Lobby>>(Array(0));
     const { lobby, createLobby, joinLobby } = useLobby();
-
     const { getAuthRequest, postAuthRequest } = useAuth();
 
+    const [inGame, setInGame] = useState(false);
+
     useEffect(() => {
-        refreshLobbies();
+        refreshLobbies().then(() => {});
+        getAuthRequest("/api/game/get-connection-info", {}).then((response: any) => {
+            if (response.data.responseStatus === "OK") {
+                setInGame(true);
+            }
+            //TODO: отлов ошибок
+        });
     }, []);
 
     const refreshLobbies = async () => {
@@ -52,6 +59,9 @@ export const GameListForm = () => {
                     </CondRenderComponent>
                 </Col>
                 <Col sm={9} className="p-0">
+                    <CondRenderComponent cond={inGame}>
+                        <GameListReconnection/>
+                    </CondRenderComponent>
                     <GameListController joinFunction={joinLobbyCallback} refreshFunction={refreshLobbies} lobby={lobby}/>
                     <GameList lobbies={lobbies}/>
                 </Col>

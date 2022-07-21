@@ -1,0 +1,32 @@
+export type CellType =
+    "HIDDEN" |
+    "SHIP" |
+    "WATER" |
+    "EMPTY" |
+    "STRAIGHT_ONE_WAY_ARROW" |
+    "DIAGONAL_ONE_WAY_ARROW" |
+    "STRAIGHT_TWO_WAY_ARROW" |
+    "DIAGONAL_TWO_WAY_ARROW" |
+    "STRAIGHT_CROSS_SHAPED_ARROW" |
+    "DIAGONAL_CROSS_SHAPED_ARROW" |
+    "DIAGONAL_Y_ARROW" |
+    "HORSE" |
+    "BARREL" |
+    "LABYRINTH_WOOD" |
+    "LABYRINTH_SAND" |
+    "LABYRINTH_JUNGLE" |
+    "LABYRINTH_ROCKS" |
+    "ICE" |
+    "TRAP" |
+    "CROCODILE" |
+    "CANNIBAL" |
+    "FORTRESS" |
+    "NATIVE" |
+    "CHEST_1" |
+    "CHEST_2" |
+    "CHEST_3" |
+    "CHEST_4" |
+    "CHEST_5" |
+    "BALL" |
+    "AIRPLANE" |
+    "GUN";

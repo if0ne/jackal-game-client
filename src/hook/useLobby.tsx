@@ -267,7 +267,9 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
     }
 
     const startGame = async () => {
+        const response = await postAuthRequest("/api/game/start", {});
 
+        return response.data;
     }
 
     const value = {

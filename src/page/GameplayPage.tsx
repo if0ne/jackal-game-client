@@ -1,5 +1,5 @@
 import {RequiredRoles} from "../components/RequiredRoles";
-import {JackalGameComponent} from "../components/jackal-game/JackalGameComponent";
+import {JackalGameComponent} from "../components/jackal_game/JackalGameComponent";
 
 export const GameplayPage = () => {
     return (

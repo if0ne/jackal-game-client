@@ -3,7 +3,6 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
 import {useAuth} from "./useAuth";
-import {LobbyMember} from "../components/models/LobbyMember";
 import JwtDecode from "jwt-decode";
 
 let gameSocket: WebSocket | null = null;
