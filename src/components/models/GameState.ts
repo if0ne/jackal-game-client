@@ -2,6 +2,7 @@ export type GameState = {
     currentPlayerId: string,
     currentPlayerNumber: number,
     players: Array<{
+        id: string,
         number: number,
         name: string,
         picture: string,

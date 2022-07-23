@@ -72,13 +72,15 @@ import cellYellowShip from "../../assets/cells/yellow-ship.png";
 import React, {useEffect, useState} from "react";
 import {useGameService} from "../../hook/useGameService";
 import {Cell} from "./Cell";
+import {useLobby} from "../../hook/useLobby";
 
 export const JackalGameComponent = () => {
 
-    const [choosed, setChoosed] = useState<number | null>(null);
+    const [choice, setChoice] = useState<number | null>(null);
     const [withMoney, setWithMoney] = useState(false);
 
-    const { newMessage, gameState, localPlayer, doAction } = useGameService();
+    const { newMessage, gameState, localPlayer, doAction, directions } = useGameService();
+    const { lobby } = useLobby();
     const [needRender, setNeedRender] = useState(false);
 
     useEffect(() => {
@@ -87,11 +89,29 @@ export const JackalGameComponent = () => {
         });
     }, [gameState, newMessage, localPlayer]);
 
+    useEffect(() => {
+        if (gameState !== null) {
+            gameState.players = gameState.players.map((value: any) => {
+                return {
+                    id: value.id,
+                    number: value.number,
+                    name: lobby.members.get(value.id).name,
+                    picture: lobby.members.get(value.id).pictureUrl,
+                    coins: value.coins,
+                    pirates: value.pirates,
+                };
+            });
+            setNeedRender((prev) => {
+                return !prev;
+            });
+        }
+    }, [lobby]);
+
     const chooseCell = (index: number) => {
-        if (choosed === index) {
-            setChoosed(null);
+        if (choice === index) {
+            setChoice(null);
         } else {
-            setChoosed(index);
+            setChoice(index);
         }
     }
 
@@ -106,10 +126,20 @@ export const JackalGameComponent = () => {
     }
 
     const teamNumberToDegrees = (teamNumber: number) => {
-        const scale = (teamNumber + 2) % 4;
+        const scale = ((Math.abs(-2 + teamNumber)) % 4) * Math.sign(-2 + teamNumber);
 
         return 90 * scale;
     };
+
+    const isNextDirection = (x: number, y: number) => {
+        for (const direction of directions) {
+            if (direction.x === x && direction.y === y) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     const getCardImage = (cell: any) => {
         switch (cell.cellType) {
@@ -198,11 +228,12 @@ export const JackalGameComponent = () => {
         return false;
     };
 
-    const isClickable = (x: number, y: number) => {
-        const isMyTurn = gameState.currentPlayerNumber === localPlayer.playerNumber;
+    const isMyTurn = () => gameState.currentPlayerNumber === localPlayer.playerNumber;
 
+    const isClickable = (x: number, y: number) => {
         const containsMyPirates = isCellContainsMyPirates(x, y);
-        return isMyTurn && containsMyPirates;
+
+        return isMyTurn() && containsMyPirates;
     };
 
     const isContainsMoney = (x: number, y: number) => {
@@ -210,19 +241,19 @@ export const JackalGameComponent = () => {
     }
 
     const handleClick = (x: number, y: number) => {
-        if (choosed !== null) {
-            if ((y*13 + x) === choosed) {
+        if (choice !== null) {
+            if ((y*13 + x) === choice) {
                 if (withMoney) {
-                    setChoosed(null);
+                    setChoice(null);
                 } else {
                     if (isContainsMoney(x, y)) {
                         setWithMoney(true);
                     } else {
-                        setChoosed(null);
+                        setChoice(null);
                     }
                 }
             } else {
-                const startPos = getCellPosition(choosed);
+                const startPos = getCellPosition(choice);
                 doAction(
                     gameState.cells[startPos.y][startPos.x].pirates[0].number,
                     withMoney,
@@ -230,7 +261,7 @@ export const JackalGameComponent = () => {
                     y
                 ).then(() => {});
                 setWithMoney(false);
-                setChoosed(null);
+                setChoice(null);
             }
         } else {
             if (isClickable(x, y)) {
@@ -242,30 +273,42 @@ export const JackalGameComponent = () => {
     };
 
     return (
-        <div className="game-container">
-            <div className="mx-auto d-flex game-map" style={{transform: `rotate(${teamNumberToDegrees(localPlayer ? localPlayer.playerNumber : 2)}deg)`}}>
+        <>
+            <div style={{position: "fixed"}}>
                 {
-                    //@ts-ignore
-                    gameState && gameState.cells.map((row, y) =>
-                        row.map((cell: any, x: number) => {
-                            return (
-                                <Cell
-                                    key={y*13 + x}
-                                    isChoosed={choosed === y*13+x}
-                                    withMoney={withMoney}
-                                    cell={cell}
-                                    globalRotation={
-                                        teamNumberToDegrees(localPlayer ? localPlayer.playerNumber : 2)
-                                    }
-                                    onClick={() => handleClick(x, y)}
-                                >
-                                    <img src={getCardImage(cell)} className="game-cell-img" alt="cell"/>
-                                </Cell>
-                            )
-                        })
-                    )
+                    lobby &&
+                        gameState.players.map((value: any, index: any) => <p key={index}style={{color: "#fff"}}>{value.name}</p>)
                 }
             </div>
-        </div>
+            <div className="game-container">
+                <div className="mx-auto d-flex game-map" style={{transform: `rotate(${localPlayer ? teamNumberToDegrees(localPlayer.playerNumber) : 0}deg)`}}>
+                    {
+                        //@ts-ignore
+                        gameState && gameState.cells.map((row, y) =>
+                            row.map((cell: any, x: number) => {
+                                return (
+                                    <Cell
+                                        key={y*13 + x}
+                                        isChoosed={choice === y*13+x}
+                                        withMoney={withMoney}
+                                        cell={cell}
+                                        globalRotation={
+                                            localPlayer ? teamNumberToDegrees(localPlayer.playerNumber) : 0
+                                        }
+                                        isNextDirection={
+                                            isMyTurn() && isNextDirection(x, y)
+                                        }
+                                        onClick={() => handleClick(x, y)}
+                                    >
+                                        <img src={getCardImage(cell)} className="game-cell-img" alt="cell"/>
+                                    </Cell>
+                                )
+                            })
+                        )
+                    }
+                </div>
+            </div>
+        </>
+
     );
 }

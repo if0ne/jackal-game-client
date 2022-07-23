@@ -74,6 +74,8 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
     const connect = (userSub: string, lobbySub: string, token: string) => {
         lobbySocket = new SockJS(`${process.env.REACT_APP_LOBBY_SERVICE_URL}/lobby-connect/`);
         lobbyClient = Stomp.over(lobbySocket);
+        //@ts-ignore
+        lobbyClient.debug = null;
         lobbyClient?.connect({
             Authorization: token
         }, () => {

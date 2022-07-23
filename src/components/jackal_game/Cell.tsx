@@ -6,18 +6,16 @@ import React from "react";
 export const Cell = (props: any) => {
 
     const getPirateColorByNumber = (number: number) => {
-
         switch (number) {
             case 0:
                 return "#2c2e35";
             case 1:
-                return "#ffda42";
+                return "#aa42ff";
             case 2:
                 return "#ffffff";
             case 3:
                 return "#ff2e17";
         }
-
     }
 
     const getTopByIndex = (index: any) => {
@@ -57,18 +55,31 @@ export const Cell = (props: any) => {
     }
 
     const getRotation = () => {
-        if (props.cell.rotationId === 0) {
-            return props.globalRotation;
+        switch (props.cell.cellType) {
+            case "STRAIGHT_ONE_WAY_ARROW": {
+                return props.globalRotation + (props.cell.rotationId - 1) * 90;
+            }
+            case "STRAIGHT_TWO_WAY_ARROW": {
+                return props.globalRotation + (props.cell.rotationId - 1) * 90;
+            }
+            case "DIAGONAL_ONE_WAY_ARROW": {
+                return props.globalRotation + (props.cell.rotationId - 1) * 90;
+            }
+            case "DIAGONAL_TWO_WAY_ARROW": {
+                return props.globalRotation + (props.cell.rotationId - 1) * 90;
+            }
+            case "DIAGONAL_Y_ARROW": {
+                return props.globalRotation - (props.cell.rotationId - 1) * 90;
+            }
         }
-
-        return props.globalRotation - (props.cell.rotationId + 1)*90;
+        return 0;
     }
 
     return (
         <div
-            className={`game-cell ${getBorder()}`}
+            className={`game-cell ${getBorder()} ${props.isNextDirection ? "next-direction-cell" : ""}`}
             onClick={props.onClick}
-            style={{transform: `rotate(${getRotation()}deg)`}}
+            style={{transform: `rotate(${getRotation()-props.globalRotation}deg)`}}
         >
             {props.children}
             <div className="game-cell-container">

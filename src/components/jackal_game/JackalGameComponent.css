@@ -58,3 +58,7 @@
     position: absolute;
     top: 1%;
 }
+
+.next-direction-cell {
+    border: 2px solid #4dd6ff;
+}

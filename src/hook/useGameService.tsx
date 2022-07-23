@@ -32,6 +32,7 @@ export const GameProvider = ({children}: {children: ReactNode}) => {
 
     const [gameState, setGameState] = useState<GameState | null>(null);
     const [localPlayer, setLocalPlayer] = useState<OwnPlayerData | null>(null);
+    const [directions, setDirections] = useState(Array(0));
 
     const getTeamNumberByPirate = (gameState: any, pirate: number) => {
         for (const player of gameState.players) {
@@ -98,6 +99,8 @@ export const GameProvider = ({children}: {children: ReactNode}) => {
     const connect = (userSub: string, lobbySub: string, token: string) => {
         gameSocket = new SockJS(`${process.env.REACT_APP_GAME_SERVICE_URL}/jackal-websocket-connection/`);
         gameClient = Stomp.over(gameSocket);
+        //@ts-ignore
+        gameClient.debug = null;
         gameClient?.connect({
             jwt_token: token
         }, () => {
@@ -105,8 +108,6 @@ export const GameProvider = ({children}: {children: ReactNode}) => {
             currentSessionId = JwtDecode(token).sessionId;
             // @ts-ignore
             const playerId = JwtDecode(token).userId;
-
-            console.log(lobbySub);
 
             gameClient?.subscribe(userSub, (message) => {
                 let objectFromMessage = JSON.parse(message.body);
@@ -124,6 +125,7 @@ export const GameProvider = ({children}: {children: ReactNode}) => {
                         };
                         initData.players.forEach((player: PlayerResponse) => {
                             gameState.players.push({
+                                id: player.id,
                                 number:  player.number,
                                 name: lobby ? lobby.members.get(player.id).name : `Player ${player.number}`,
                                 picture: lobby ? lobby.members.get(player.id).pictureUrl : "",
@@ -163,9 +165,10 @@ export const GameProvider = ({children}: {children: ReactNode}) => {
                 console.log(objectFromMessage);
                 switch (objectFromMessage.type) {
                     case "GAME_ACTION_COMPLETED": {
+                        setDirections(Array(0));
                         const newData = objectFromMessage as ActionResponseFinished;
                         const newCells = newData.changedCells.map((value) => {
-                           const cell = {
+                           return {
                                cellType: value.cellType,
                                coins: value.coinsNumber,
                                pirates: value.pirates.map((value) => {
@@ -178,8 +181,6 @@ export const GameProvider = ({children}: {children: ReactNode}) => {
                                rotationId: value.rotationId,
                                teamNumber: getTeamNumberByCell(newData.players, value)
                            };
-
-                           return cell;
                         });
 
                         //@ts-ignore
@@ -200,7 +201,7 @@ export const GameProvider = ({children}: {children: ReactNode}) => {
                         //TODO: Использовать directions
                         const newData = objectFromMessage as ActionResponseDirectionQuestion;
                         const newCells = newData.changedCells.map((value) => {
-                            const cell = {
+                            return {
                                 cellType: value.cellType,
                                 coins: value.coinsNumber,
                                 pirates: value.pirates.map((value) => {
@@ -213,8 +214,6 @@ export const GameProvider = ({children}: {children: ReactNode}) => {
                                 rotationId: value.rotationId,
                                 teamNumber: getTeamNumberByCell(newData.players, value)
                             };
-
-                            return cell;
                         });
 
                         //@ts-ignore
@@ -226,6 +225,7 @@ export const GameProvider = ({children}: {children: ReactNode}) => {
                             currentGameState.cells[value.position.y][value.position.x] = value;
                         });
                         setGameState(currentGameState);
+                        setDirections(newData.directions);
                         setNewMessage((prev) => {
                             return !prev;
                         });
@@ -273,6 +273,7 @@ export const GameProvider = ({children}: {children: ReactNode}) => {
         newMessage,
         gameState,
         localPlayer,
+        directions,
         doAction
     };
 
