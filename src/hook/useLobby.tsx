@@ -28,19 +28,21 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
     const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
-        getAuthRequest("/api/lobby/connection-info")
-            .then((response: any) => {
-                if (response && response.data.responseStatus === "OK") {
-                    connect(
-                        //@ts-ignore
-                        response.data.webSocketInfo.subscriptionUserUrl,
-                        //@ts-ignore
-                        response.data.webSocketInfo.subscriptionLobbyUrl,
-                        //@ts-ignore
-                        response.data.token
-                    );
-                }
-            });
+        if (lobbySocket === null) {
+            getAuthRequest("/api/lobby/connection-info")
+                .then((response: any) => {
+                    if (response && response.data.responseStatus === "OK") {
+                        connect(
+                            //@ts-ignore
+                            response.data.webSocketInfo.subscriptionUserUrl,
+                            //@ts-ignore
+                            response.data.webSocketInfo.subscriptionLobbyUrl,
+                            //@ts-ignore
+                            response.data.token
+                        );
+                    }
+                });
+        }
 
         return () => {
             disconnect();
@@ -195,7 +197,7 @@ export const LobbyProvider = ({children}: {children: ReactNode}) => {
                         break;
                     }
                     case "GAME_SESSION_CREATION_INFO_FOR_ALL": {
-                        navigate("/game");
+                        window.location.href = "/game";
                     }
                     //TODO: Error Handling
                 }

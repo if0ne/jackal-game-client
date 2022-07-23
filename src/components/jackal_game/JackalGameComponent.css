@@ -1,5 +1,6 @@
 .game-container {
-    background: rgb(62, 91, 75);
+    /*background: rgb(62, 91, 75);*/
+    background: #1f1f1f;
 }
 
 .game-map {
@@ -36,7 +37,7 @@
     width: 100%;
 }
 
-.game-cell-object-pirate {
+.game-cell-object {
     aspect-ratio: 1/1;
     border-radius: 100%;
     position: absolute;
@@ -44,5 +45,16 @@
 }
 
 .choosed-cell {
-    border: 1px solid red;
+    border: 2px solid #c01616;
+}
+
+.with-money {
+    border: 2px solid #ffc400;
+}
+
+.coin {
+    font-size: 20px;
+    left: 66%;
+    position: absolute;
+    top: 1%;
 }

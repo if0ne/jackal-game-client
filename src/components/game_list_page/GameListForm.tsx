@@ -17,7 +17,7 @@ export const GameListForm = () => {
 
     const [lobbies, setLobbies] = useState<Array<Lobby>>(Array(0));
     const { lobby, createLobby, joinLobby } = useLobby();
-    const { getAuthRequest, postAuthRequest } = useAuth();
+    const { getAuthRequest } = useAuth();
 
     const [inGame, setInGame] = useState(false);
 

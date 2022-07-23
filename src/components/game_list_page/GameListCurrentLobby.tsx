@@ -76,7 +76,7 @@ export const GameListCurrentLobby = () => {
     const startGameCallback = () => {
         startGame().then((response: any) => {
             if (response.responseStatus === "OK") {
-                navigate("/game");
+                window.location.href = "/game";
             }
         });
     }

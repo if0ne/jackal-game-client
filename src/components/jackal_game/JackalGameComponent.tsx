@@ -68,8 +68,6 @@ import cellWhiteShip from "../../assets/cells/white-ship.png";
 import cellYArrow from "../../assets/cells/y-arrow.png";
 //@ts-ignore
 import cellYellowShip from "../../assets/cells/yellow-ship.png";
-//@ts-ignore
-import coin from "../../assets/cells/coin.png";
 
 import React, {useEffect, useState} from "react";
 import {useGameService} from "../../hook/useGameService";
@@ -77,78 +75,194 @@ import {Cell} from "./Cell";
 
 export const JackalGameComponent = () => {
 
-    const [isReady, setReady] = useState(false);
-
     const [choosed, setChoosed] = useState<number | null>(null);
+    const [withMoney, setWithMoney] = useState(false);
 
-    const { newMessage } = useGameService();
+    const { newMessage, gameState, localPlayer, doAction } = useGameService();
+    const [needRender, setNeedRender] = useState(false);
+
+    useEffect(() => {
+        setNeedRender((prev) => {
+            return !prev;
+        });
+    }, [gameState, newMessage, localPlayer]);
 
     const chooseCell = (index: number) => {
-        if (choosed == index) {
+        if (choosed === index) {
             setChoosed(null);
         } else {
             setChoosed(index);
         }
     }
 
-    const getCell = (index: number) => {
+    const getCellPosition = (index: number) => {
         let y = Math.trunc(index / 13);
         let x = index % 13;
 
-        if (y === 0 && x === 6)  {
-            return cellBlackShip;
+        return {
+            x: x,
+            y: y
+        };
+    }
+
+    const teamNumberToDegrees = (teamNumber: number) => {
+        const scale = (teamNumber + 2) % 4;
+
+        return 90 * scale;
+    };
+
+    const getCardImage = (cell: any) => {
+        switch (cell.cellType) {
+            case "HIDDEN":
+                return cellClosed;
+            case "WATER":
+                return cellWater;
+            case "EMPTY":
+                return cellGrass;
+            case "STRAIGHT_ONE_WAY_ARROW":
+                return cellOneArrow;
+            case "DIAGONAL_ONE_WAY_ARROW":
+                return cellDiagOneArrow;
+            case "STRAIGHT_TWO_WAY_ARROW":
+                return cellTwoArrow;
+            case "DIAGONAL_TWO_WAY_ARROW":
+                return cellDiagTwoArrow;
+            case "STRAIGHT_CROSS_SHAPED_ARROW":
+                return cellCrossArrow;
+            case "DIAGONAL_CROSS_SHAPED_ARROW":
+                return cellDiagCross;
+            case "DIAGONAL_Y_ARROW":
+                return cellYArrow;
+            case "HORSE":
+                return cellHorse;
+            case "BARREL":
+                return cellBarrel;
+            case "LABYRINTH_WOOD":
+                return cellLabWood;
+            case "LABYRINTH_SAND":
+                return cellLabSand;
+            case "LABYRINTH_JUNGLE":
+                return cellLabJungle;
+            case "LABYRINTH_ROCKS":
+                return cellLabRock;
+            case "ICE":
+                return cellIce;
+            case "TRAP":
+                return cellTrap;
+            case "CROCODILE":
+                return cellCroco;
+            case "CANNIBAL":
+                return cellCannibal;
+            case "FORTRESS":
+                return cellFortress;
+            case "NATIVE":
+                return cellAmazonka;
+            case "CHEST_1":
+                return cellChest1;
+            case "CHEST_2":
+                return cellChest2;
+            case "CHEST_3":
+                return cellChest3;
+            case "CHEST_4":
+                return cellChest4;
+            case "CHEST_5":
+                return cellChest5;
+            case "BALL":
+                return cellBalloon;
+            case "AIRPLANE":
+                return cellAirplane;
+            case "GUN":
+                return cellCannon;
+            case "SHIP": {
+                switch (cell.teamNumber) {
+                    case 0:
+                        return cellBlackShip;
+                    case 1:
+                        return cellYellowShip;
+                    case 2:
+                        return cellWhiteShip;
+                    case 3:
+                        return cellRedShip;
+                }
+            }
+        }
+    };
+
+    const isCellContainsMyPirates = (x: number, y: number) => {
+        for (const pirate of gameState.cells[y][x].pirates) {
+            if (pirate.team === localPlayer.playerNumber) {
+                return true;
+            }
         }
 
-        if (y === 12 && x === 6)  {
-            return cellWhiteShip;
-        }
+        return false;
+    };
 
-        if (y === 6 && x === 0)  {
-            return cellYellowShip;
-        }
+    const isClickable = (x: number, y: number) => {
+        const isMyTurn = gameState.currentPlayerNumber === localPlayer.playerNumber;
 
-        if (y === 6 && x === 12)  {
-            return cellRedShip;
-        }
+        const containsMyPirates = isCellContainsMyPirates(x, y);
+        return isMyTurn && containsMyPirates;
+    };
 
-        if (x === 0 || y === 0 || x === 12 || y === 12 || (x === 1 && (y === 1 || y === 11)) || (x === 11 && (y === 1 || y === 11))) {
-            return cellWater;
+    const isContainsMoney = (x: number, y: number) => {
+        return gameState.cells[y][x].coins > 0 && gameState.cells[y][x].cellType !== "SHIP";
+    }
+
+    const handleClick = (x: number, y: number) => {
+        if (choosed !== null) {
+            if ((y*13 + x) === choosed) {
+                if (withMoney) {
+                    setChoosed(null);
+                } else {
+                    if (isContainsMoney(x, y)) {
+                        setWithMoney(true);
+                    } else {
+                        setChoosed(null);
+                    }
+                }
+            } else {
+                const startPos = getCellPosition(choosed);
+                doAction(
+                    gameState.cells[startPos.y][startPos.x].pirates[0].number,
+                    withMoney,
+                    x,
+                    y
+                ).then(() => {});
+                setWithMoney(false);
+                setChoosed(null);
+            }
         } else {
-            return cellClosed;
-        }
-    }
-
-    const getCommandColor = (index: number) => {
-        let y = Math.trunc(index / 13);
-        let x = index % 13;
-
-        if (y === 0 && x === 6)  {
-            return "#2c2e35";
+            if (isClickable(x, y)) {
+                chooseCell(y*13 + x);
+            }
         }
 
-        if (y === 12 && x === 6)  {
-            return "#ffffff";
-        }
 
-        if (y === 6 && x === 0)  {
-            return "#ffda42";
-        }
-
-        if (y === 6 && x === 12)  {
-            return "#ff2e17";
-        }
-
-        return undefined;
-    }
+    };
 
     return (
         <div className="game-container">
-            <div className="mx-auto d-flex game-map">
+            <div className="mx-auto d-flex game-map" style={{transform: `rotate(${teamNumberToDegrees(localPlayer ? localPlayer.playerNumber : 2)}deg)`}}>
                 {
-                    [...Array(13*13)].map((value, index) =>
-                        <Cell key={index} isChoosed={choosed == index} commandColor={getCommandColor(index)} onClick={() => chooseCell(index)}>
-                            <img src={getCell(index)} className="game-cell-img" alt="cell"/>
-                        </Cell>
+                    //@ts-ignore
+                    gameState && gameState.cells.map((row, y) =>
+                        row.map((cell: any, x: number) => {
+                            return (
+                                <Cell
+                                    key={y*13 + x}
+                                    isChoosed={choosed === y*13+x}
+                                    withMoney={withMoney}
+                                    cell={cell}
+                                    globalRotation={
+                                        teamNumberToDegrees(localPlayer ? localPlayer.playerNumber : 2)
+                                    }
+                                    onClick={() => handleClick(x, y)}
+                                >
+                                    <img src={getCardImage(cell)} className="game-cell-img" alt="cell"/>
+                                </Cell>
+                            )
+                        })
                     )
                 }
             </div>
