@@ -37,7 +37,13 @@ import cellDiagTwoArrow from "../../assets/cells/diagonal-two-way-arrow.png";
 //@ts-ignore
 import cellFortress from "../../assets/cells/fortress.png";
 //@ts-ignore
-import cellGrass from "../../assets/cells/grass.png";
+import cellGrass1 from "../../assets/cells/grass-1.png";
+//@ts-ignore
+import cellGrass2 from "../../assets/cells/grass-2.png";
+//@ts-ignore
+import cellGrass3 from "../../assets/cells/grass-3.png";
+//@ts-ignore
+import cellGrass4 from "../../assets/cells/grass-4.png";
 //@ts-ignore
 import cellHorse from "../../assets/cells/horse.png";
 //@ts-ignore
@@ -161,7 +167,7 @@ export const JackalGameComponent = () => {
             case "WATER":
                 return cellWater;
             case "EMPTY":
-                return cellGrass;
+                return [cellGrass1, cellGrass2, cellGrass3, cellGrass4][(cell.position.x + cell.position.y) % 4];
             case "STRAIGHT_ONE_WAY_ARROW":
                 return cellOneArrow;
             case "DIAGONAL_ONE_WAY_ARROW":

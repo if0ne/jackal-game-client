@@ -1,10 +1,10 @@
 version: '3.9'
 
 services:
-  lobby-service:
+  client:
     build: ./
     image: jackal-game-client
-    container_name: jackal_game-client
+    container_name: jackal-game-client
     ports:
       - "3000:3000"
     environment:
