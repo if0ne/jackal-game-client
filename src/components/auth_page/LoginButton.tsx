@@ -25,8 +25,8 @@ export const LoginButton = (props: LoginButtonProps) => {
         //@ts-ignore
         window.SetTokenCallback = (url: string) => {
             let query = queryString.parse(url);
-            if (query["http://localhost:3000/getToken#access_token"] !== undefined) {
-                const newToken = query["http://localhost:3000/getToken#access_token"] as string;
+            if (query[`${process.env.REACT_APP_CLIENT_URL}/getToken#access_token`] !== undefined) {
+                const newToken = query[`${process.env.REACT_APP_CLIENT_URL}/getToken#access_token`] as string;
                 props.callback(newToken);
             }
         }
