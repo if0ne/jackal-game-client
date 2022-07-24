@@ -335,12 +335,17 @@ export const JackalGameComponent = () => {
                     }
                 </div>
             </div>
+            <div className="turn-panel-info">
             {
                 isMyTurn() &&
-                    <div className="turn-panel-info">
-                        <p className="turn-panel-info-text">Ваш ход</p>
-                    </div>
+                    <p className="turn-panel-info-text">Ваш ход</p>
             }
+                <div className="control-info">
+                    <h2>Памятка</h2>
+                    <p><b>ЛКМ</b> - выбрать клетку с пиратом</p>
+                    <p><b>2 х ЛКМ</b> - взять монету</p>
+                </div>
+            </div>
         </>
 
     );

@@ -111,6 +111,7 @@
 
 .turn-panel-info {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     height: 100vh;
     max-width: 25%;
@@ -128,4 +129,15 @@
     font-size: 36px;
     font-weight: bold;
     text-align: center;
+}
+
+.control-info {
+    color: #d2d2d2;
+    height: 50vh;
+    padding: 1vh;
+}
+
+.control-info h2 {
+    text-align: center;
+    word-break: break-word;
 }

@@ -196,7 +196,6 @@ export const GameProvider = ({children}: {children: ReactNode}) => {
                         break;
                     }
                     case "DIRECTION_QUESTION": {
-                        //TODO: Использовать directions
                         const newData = objectFromMessage as ActionResponseDirectionQuestion;
                         const newCells = newData.changedCells.map((value) => {
                             return {

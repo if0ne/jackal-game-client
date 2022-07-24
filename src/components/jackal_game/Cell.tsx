@@ -82,7 +82,7 @@ export const Cell = (props: any) => {
             style={{transform: `rotate(${getRotation()-props.globalRotation}deg)`}}
         >
             {props.children}
-            <div className="game-cell-container">
+            <div className="game-cell-container"  style={{transform: `rotate(${-getRotation()}deg)`}}>
                 <div className="game-cell-object-container">
                     {
                         props.cell.pirates &&
