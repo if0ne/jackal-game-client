@@ -80,8 +80,6 @@ export const GameProvider = ({children}: {children: ReactNode}) => {
                             //@ts-ignore
                             response.data.token
                         );
-                    } else {
-                        navigate("/games");
                     }
                 });
         }

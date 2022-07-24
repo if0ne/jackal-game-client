@@ -115,6 +115,7 @@ export const JackalGameComponent = () => {
     }, [newMessage, lobby]);
 
     const getCoinsByPirateTeam = (number: number) => {
+        //TODO: добавить координаты корабля в GameState, чтобы не было n^2
         for (const y of gameState.cells) {
             for (const x of y) {
                 if (x.cellType === "SHIP" && x.teamNumber === number) {

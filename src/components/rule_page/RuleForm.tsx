@@ -22,7 +22,7 @@ import cellCroco from "../../assets/cells/crocodile.png";
 //@ts-ignore
 import cellFortress from "../../assets/cells/fortress.png";
 //@ts-ignore
-import cellGrass from "../../assets/cells/grass.png";
+import cellGrass from "../../assets/cells/grass-1.png";
 //@ts-ignore
 import cellHorse from "../../assets/cells/horse.png";
 //@ts-ignore
