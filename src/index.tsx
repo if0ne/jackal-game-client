@@ -15,7 +15,6 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-    <React.StrictMode>
       <AxiosProvider>
           <BrowserRouter>
               <AuthProvider>
@@ -27,5 +26,4 @@ root.render(
               </AuthProvider>
           </BrowserRouter>
       </AxiosProvider>
-    </React.StrictMode>
 );

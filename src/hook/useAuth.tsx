@@ -15,8 +15,6 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 
     const {setTokenHeader, getRequest, postRequest} = useAxios();
 
-    const navigate = useNavigate();
-
     useEffect(() => {
         const token = localStorage.getItem("token");
         setToken(token);
@@ -78,10 +76,11 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
         let response = await postRequest(`/api/auth/${provider}`, {
            accessToken: accessToken
         });
-
         if (response.data.responseStatus === "OK") {
             setAuthTokens(response.data.accessToken, response.data.refreshToken);
-            refreshUser().then(() => navigate("/"));
+            refreshUser().then(() => {
+                window.location.href = "/";
+            });
         }
 
     };
@@ -92,7 +91,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
         setToken(null);
         setTokenHeader(null);
         callback();
-        navigate("/");
+        window.location.href = "/";
     }
 
     const getAuthRequest = async (route: string, body: any) => {

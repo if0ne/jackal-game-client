@@ -22,7 +22,6 @@ export const LoginButton = (props: LoginButtonProps) => {
         console.log(process.env.REACT_APP_CLIENT_URL);
         //@ts-ignore
         window.SetTokenCallback = undefined;
-
         //@ts-ignore
         window.SetTokenCallback = (url: string) => {
             let query = queryString.parse(url);

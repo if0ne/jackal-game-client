@@ -2,11 +2,8 @@ import {useEffect} from "react";
 
 export const TokenPage = () => {
     useEffect(() => {
+        window.opener.SetTokenCallback(window.location.href);
         window.close();
-
-        return () => {
-            window.opener.SetTokenCallback(window.location.href);
-        }
     }, []);
 
     return (

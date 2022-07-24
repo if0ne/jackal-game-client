@@ -17,8 +17,24 @@ export const AuthorizationForm = () => {
                     <Col className="border rounded p-4 btn-container">
                         <h1 className="login-title">Войти</h1>
 
-                        <LoginButton url={yandexAuthorizeUrl} className="btn-yandex" imgLogo={{ src: "yandex", alt: "yandex logo" }} text="Войти с Яндекс ID" callback={(accessToken) => signIn(accessToken, "yandex")}/>
-                        <LoginButton url={vkAuthorizeUrl} className="btn-vk" imgLogo={{ src: "vk", alt: "vkontakte logo" }} text="Войти через ВКонтакте" callback={(accessToken) => signIn(accessToken, "vk")}/>
+                        <LoginButton
+                            url={yandexAuthorizeUrl}
+                            className="btn-yandex"
+                            imgLogo={{ src: "yandex", alt: "yandex logo" }}
+                            text="Войти с Яндекс ID"
+                            callback={(accessToken) => {
+                                signIn(accessToken, "yandex").then(() => {});
+                            }}
+                        />
+                        <LoginButton
+                            url={vkAuthorizeUrl}
+                            className="btn-vk"
+                            imgLogo={{ src: "vk", alt: "vkontakte logo" }}
+                            text="Войти через ВКонтакте"
+                            callback={(accessToken) => {
+                                signIn(accessToken, "vk").then(() => {});
+                            }}
+                        />
                     </Col>
                 </Row>
             </Container>

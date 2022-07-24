@@ -28,7 +28,6 @@ export const GameProvider = ({children}: {children: ReactNode}) => {
 
     const { getAuthRequest } = useAuth();
     const { lobby } = useLobby();
-    const navigate = useNavigate();
 
     const [gameState, setGameState] = useState<GameState | null>(null);
     const [localPlayer, setLocalPlayer] = useState<OwnPlayerData | null>(null);
