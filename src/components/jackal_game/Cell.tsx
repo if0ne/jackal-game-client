@@ -3,20 +3,20 @@ import coin from "../../assets/cells/coin.png";
 
 import React from "react";
 
-export const Cell = (props: any) => {
-
-    const getPirateColorByNumber = (number: number) => {
-        switch (number) {
-            case 0:
-                return "#2c2e35";
-            case 1:
-                return "#aa42ff";
-            case 2:
-                return "#ffffff";
-            case 3:
-                return "#ff2e17";
-        }
+export const getPirateTeamColorByNumber = (number: number) => {
+    switch (number) {
+        case 0:
+            return "#2c2e35";
+        case 1:
+            return "#aa42ff";
+        case 2:
+            return "#ccff00";
+        case 3:
+            return "#ff2e17";
     }
+}
+
+export const Cell = (props: any) => {
 
     const getTopByIndex = (index: any) => {
         if (index === 0) {
@@ -87,7 +87,7 @@ export const Cell = (props: any) => {
                     {
                         props.cell.pirates &&
                             props.cell.pirates.map((value: any, index: any) =>
-                                <div key={index} className="game-cell-object" style={{top: getTopByIndex(index), left: getLeftByIndex(index), background: getPirateColorByNumber(value.team)}}>
+                                <div key={index} className="game-cell-object" style={{top: getTopByIndex(index), left: getLeftByIndex(index), background: getPirateTeamColorByNumber(value.team)}}>
                                 </div>
                             )
                     }

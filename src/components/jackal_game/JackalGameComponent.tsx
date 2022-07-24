@@ -73,6 +73,7 @@ import React, {useEffect, useState} from "react";
 import {useGameService} from "../../hook/useGameService";
 import {Cell} from "./Cell";
 import {useLobby} from "../../hook/useLobby";
+import {PlayerCard} from "./PlayerCard";
 
 export const JackalGameComponent = () => {
 
@@ -90,14 +91,14 @@ export const JackalGameComponent = () => {
     }, [gameState, newMessage, localPlayer]);
 
     useEffect(() => {
-        if (gameState !== null) {
+        if (gameState !== null && lobby !== null) {
             gameState.players = gameState.players.map((value: any) => {
                 return {
                     id: value.id,
                     number: value.number,
                     name: lobby.members.get(value.id).name,
                     picture: lobby.members.get(value.id).pictureUrl,
-                    coins: value.coins,
+                    coins: getCoinsByPirateTeam(value.number),
                     pirates: value.pirates,
                 };
             });
@@ -105,7 +106,19 @@ export const JackalGameComponent = () => {
                 return !prev;
             });
         }
-    }, [lobby]);
+    }, [newMessage, lobby]);
+
+    const getCoinsByPirateTeam = (number: number) => {
+        for (const y of gameState.cells) {
+            for (const x of y) {
+                if (x.cellType === "SHIP" && x.teamNumber === number) {
+                    return x.coins;
+                }
+            }
+        }
+
+        return 0;
+    };
 
     const chooseCell = (index: number) => {
         if (choice === index) {
@@ -228,7 +241,12 @@ export const JackalGameComponent = () => {
         return false;
     };
 
-    const isMyTurn = () => gameState.currentPlayerNumber === localPlayer.playerNumber;
+    const isMyTurn = () => {
+        if (!gameState) {
+            return false;
+        }
+        return gameState.currentPlayerNumber === localPlayer.playerNumber;
+    }
 
     const isClickable = (x: number, y: number) => {
         const containsMyPirates = isCellContainsMyPirates(x, y);
@@ -245,6 +263,7 @@ export const JackalGameComponent = () => {
             if ((y*13 + x) === choice) {
                 if (withMoney) {
                     setChoice(null);
+                    setWithMoney(false);
                 } else {
                     if (isContainsMoney(x, y)) {
                         setWithMoney(true);
@@ -274,10 +293,11 @@ export const JackalGameComponent = () => {
 
     return (
         <>
-            <div style={{position: "fixed"}}>
-                {
-                    lobby &&
-                        gameState.players.map((value: any, index: any) => <p key={index}style={{color: "#fff"}}>{value.name}</p>)
+            <div className="side-panel-info">
+                {gameState &&
+                    gameState.players.map((value: any) =>
+                        <PlayerCard player={value}/>
+                    )
                 }
             </div>
             <div className="game-container">
@@ -308,6 +328,12 @@ export const JackalGameComponent = () => {
                     }
                 </div>
             </div>
+            {
+                isMyTurn() &&
+                    <div className="turn-panel-info">
+                        <p className="turn-panel-info-text">Ваш ход</p>
+                    </div>
+            }
         </>
 
     );
