@@ -19,6 +19,7 @@ type LoginButtonProps = {
 
 export const LoginButton = (props: LoginButtonProps) => {
     const login = () => {
+        console.log(process.env.REACT_APP_CLIENT_URL);
         //@ts-ignore
         window.SetTokenCallback = undefined;
 
